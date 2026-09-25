@@ -1,0 +1,5223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Data Display & Management</title>
+
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #172033;
+            --muted: #697386;
+            --border: #e5e9f0;
+
+            --blue: #2563eb;
+            --blue-light: #eff6ff;
+
+            --green: #16a34a;
+            --green-light: #ecfdf3;
+
+            --purple: #7c3aed;
+            --purple-light: #f5f3ff;
+
+            --orange: #d97706;
+            --orange-light: #fff7ed;
+
+            --red: #dc2626;
+            --red-dark: #b91c1c;
+            --red-light: #fef2f2;
+
+            --shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .page {
+            width: min(1100px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 30px 0 50px;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            padding: 12px 16px 0;
+            margin-bottom: 10px;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #000000;
+        }
+
+        .logo span {
+            color: var(--blue);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .status {
+            color: #6b7280;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .home-button,
+        .dictionary-button {
+            width: 36px;
+            height: 36px;
+
+            border: 1px solid #d8dee7;
+            border-radius: 8px;
+
+            background: #ffffff;
+            color: var(--text);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-decoration: none;
+
+            font-size: 17px;
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                transform 0.15s ease;
+        }
+
+        .home-button:hover,
+        .dictionary-button:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+
+        .home-button:active,
+        .dictionary-button:active {
+            transform: scale(0.94);
+        }
+
+        .backup-button {
+            width: 100%;
+            height: 40px;
+
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+
+            background: linear-gradient(
+                135deg,
+                #eff6ff,
+                #ffffff
+            );
+
+            color: var(--blue);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-decoration: none;
+
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.1px;
+
+            transition:
+                background 0.2s ease,
+                border-color 0.2s ease,
+                transform 0.15s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .backup-button:hover {
+            background: linear-gradient(
+                135deg,
+                #dbeafe,
+                #eff6ff
+            );
+
+            border-color: #93c5fd;
+
+            box-shadow:
+                0 3px 10px rgba(59, 130, 246, 0.12);
+        }
+
+        .backup-button:active {
+            transform: scale(0.985);
+            box-shadow: none;
+        }
+
+        /* =========================
+           STORAGE STATUS
+        ========================= */
+
+        .storage-status {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            flex-shrink: 0;
+        }
+
+        .status-dot.empty {
+            background: var(--orange);
+        }
+
+        .status-text strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .status-text span {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* =========================
+           MODULE GRID
+        ========================= */
+
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .module-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .module-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+
+        .module-title {
+            min-width: 0;
+        }
+
+        .module-title h2 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .module-title p {
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .youtube .module-icon {
+            background: #fee2e2;
+            color: var(--red);
+        }
+
+        .audio .module-icon {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .transcripts .module-icon {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .wiki .module-icon {
+            background: var(--blue-light);
+            color: var(--blue);
+        }
+
+        .future .module-icon {
+            background: var(--orange-light);
+            color: var(--orange);
+        }
+
+        .module-body {
+            padding: 16px 20px 20px;
+        }
+
+        /* =========================
+           DATA ITEMS
+        ========================= */
+
+        .data-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .data-item {
+            padding: 12px 13px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: #fafbfc;
+            min-width: 0;
+            position: relative;
+        }
+
+        .data-item.selected {
+            border-color: #fca5a5;
+            background: #fff7f7;
+        }
+
+        .data-item-main {
+            min-width: 0;
+            padding-right: 40px;
+        }
+
+        .data-item-title {
+            font-weight: 650;
+            font-size: 14px;
+            line-height: 1.4;
+            overflow-wrap: anywhere;
+        }
+
+        .data-item-title a {
+            color: var(--blue);
+            text-decoration: none;
+        }
+
+        .data-item-title a:hover {
+            text-decoration: underline;
+        }
+
+        .data-meta {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .snippet {
+            color: #4b5563;
+            margin-top: 7px;
+            line-height: 1.5;
+            font-size: 13px;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        .count-badge {
+            margin-left: auto;
+            background: #f1f5f9;
+            color: #475569;
+            border-radius: 999px;
+            padding: 4px 9px;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .no-data {
+            color: var(--muted);
+            font-size: 13px;
+            padding: 8px 0;
+        }
+
+        /* =========================
+           ITEM DELETE CONTROL
+        ========================= */
+
+        .item-delete-control {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+
+            width: 30px;
+            height: 30px;
+
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+
+            background: #fff;
+            color: var(--red);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            font-size: 14px;
+            line-height: 1;
+
+            transition:
+                background 0.15s ease,
+                border-color 0.15s ease,
+                color 0.15s ease,
+                transform 0.15s ease;
+        }
+
+        .item-delete-control:hover {
+            background: var(--red-light);
+            border-color: #fca5a5;
+        }
+
+        .item-delete-control:active {
+            transform: scale(0.92);
+        }
+
+        .item-delete-control.selected {
+            background: var(--red);
+            border-color: var(--red);
+            color: #ffffff;
+        }
+
+        .item-select-checkbox {
+            position: absolute;
+            top: 17px;
+            right: 47px;
+
+            width: 16px;
+            height: 16px;
+
+            margin: 0;
+            cursor: pointer;
+
+            accent-color: var(--red);
+        }
+
+        /* =========================
+           SECTION DELETE BAR
+        ========================= */
+
+        .section-delete-bar {
+            display: none;
+
+            margin-bottom: 12px;
+            padding: 10px 12px;
+
+            border: 1px solid #fecaca;
+            border-radius: 10px;
+
+            background: #fff7f7;
+
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .section-delete-bar.visible {
+            display: flex;
+        }
+
+        .section-delete-info {
+            color: #991b1b;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .section-delete-button {
+            border: 0;
+            background: var(--red);
+            color: #ffffff;
+
+            padding: 8px 11px;
+            border-radius: 8px;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .section-delete-button:hover {
+            background: var(--red-dark);
+        }
+
+        .section-select-all {
+            border: 1px solid #fecaca;
+            background: #ffffff;
+            color: var(--red);
+
+            padding: 7px 10px;
+            border-radius: 8px;
+
+            font-size: 11px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .section-select-all:hover {
+            background: var(--red-light);
+        }
+
+        .section-delete-actions {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        /* =========================
+           DROPDOWN CONTROLS
+        ========================= */
+
+        .module-dropdown {
+            width: 100%;
+        }
+
+        .module-dropdown summary {
+            list-style: none;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .module-dropdown summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .module-dropdown summary:focus-visible {
+            outline: 2px solid var(--blue);
+            outline-offset: 3px;
+            border-radius: 8px;
+        }
+
+        .module-summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .module-summary .module-header {
+            width: 100%;
+            border-bottom: 0;
+        }
+
+        .dropdown-arrow {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+            transition: transform 0.2s ease;
+        }
+
+        .module-dropdown[open] .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .module-dropdown[open] .module-summary .module-header {
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* =========================
+           SPEAKING AUDIO PLAYER
+        ========================= */
+
+        .speaking-audio {
+            width: 100%;
+            margin-top: 10px;
+            height: 38px;
+        }
+
+        .speaking-transcript {
+            margin-top: 8px;
+            padding: 9px 10px;
+            border-radius: 8px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            color: #4b5563;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+
+        /* =========================
+           READING SUBSECTIONS
+        ========================= */
+
+        .reading-group {
+            margin-bottom: 18px;
+        }
+
+        .reading-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .reading-group-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 9px;
+        }
+
+        .reading-group-title strong {
+            font-size: 13px;
+        }
+
+        .reading-badge {
+            background: var(--blue-light);
+            color: var(--blue);
+            border-radius: 999px;
+            padding: 3px 8px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .reading-dropdown {
+            width: 100%;
+        }
+
+        .reading-dropdown summary {
+            list-style: none;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .reading-dropdown summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .reading-dropdown summary:focus-visible {
+            outline: 2px solid var(--blue);
+            outline-offset: 3px;
+            border-radius: 8px;
+        }
+
+        .reading-dropdown .reading-group-title {
+            margin-bottom: 0;
+            padding: 8px 0;
+        }
+
+        .reading-dropdown .reading-group-title::after {
+            content: "⌄";
+            width: 25px;
+            height: 25px;
+            border-radius: 7px;
+            background: #f1f5f9;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 13px;
+            transition: transform 0.2s ease;
+        }
+
+        .reading-dropdown[open] .reading-group-title::after {
+            transform: rotate(180deg);
+        }
+
+        .reading-dropdown .data-list {
+            padding-top: 9px;
+        }
+
+        /* =========================
+           FUTURE MODULES
+        ========================= */
+
+        .future-module {
+            border: 1px dashed #cbd5e1;
+            background: #fafafa;
+            border-radius: 11px;
+            padding: 13px;
+        }
+
+        .future-module strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .future-module span {
+            color: var(--muted);
+            font-size: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        /* =========================
+           CLEANUP SECTION
+        ========================= */
+
+        .cleanup {
+            margin-top: 22px;
+            background: var(--red-light);
+            border: 1px solid #fecaca;
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+
+        .cleanup-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .warning {
+            display: flex;
+            gap: 13px;
+            min-width: 0;
+        }
+
+        .warning-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #fee2e2;
+            color: var(--red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+
+        .warning h2 {
+            margin: 0;
+            font-size: 16px;
+            color: #991b1b;
+        }
+
+        .warning p {
+            margin: 5px 0 0;
+            color: #7f1d1d;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .clear-button {
+            border: 0;
+            background: var(--red);
+            color: white;
+            padding: 12px 17px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s ease;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.18);
+        }
+
+        .clear-button:hover {
+            background: var(--red-dark);
+        }
+
+        .clear-button:active {
+            transform: translateY(1px);
+        }
+
+        /* =========================
+           CONFIRMATION MODAL
+        ========================= */
+
+        .delete-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(3px);
+        }
+
+        .delete-modal-overlay.visible {
+            display: flex;
+        }
+
+        .delete-modal {
+            width: min(460px, 100%);
+
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 14px;
+
+            box-shadow:
+                0 24px 70px rgba(15, 23, 42, 0.25);
+
+            padding: 22px;
+        }
+
+        .delete-modal-icon {
+            width: 42px;
+            height: 42px;
+
+            border-radius: 11px;
+
+            background: var(--red-light);
+            color: var(--red);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 20px;
+            margin-bottom: 13px;
+        }
+
+        .delete-modal h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #111827;
+        }
+
+        .delete-modal-description {
+            margin: 8px 0 0;
+
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .delete-modal-warning {
+            margin-top: 14px;
+
+            padding: 11px 12px;
+
+            border-radius: 9px;
+
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+
+            color: #991b1b;
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .delete-code-box {
+            margin-top: 18px;
+        }
+
+        .delete-code-label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #374151;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .delete-code {
+            width: 100%;
+
+            height: 46px;
+
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+
+            padding: 0 13px;
+
+            background: #ffffff;
+
+            color: #111827;
+
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 5px;
+
+            text-align: center;
+
+            outline: none;
+
+            transition:
+                border-color 0.15s ease,
+                box-shadow 0.15s ease;
+        }
+
+        .delete-code:focus {
+            border-color: var(--red);
+
+            box-shadow:
+                0 0 0 3px rgba(220, 38, 38, 0.10);
+        }
+
+        .delete-code.invalid {
+            border-color: var(--red);
+
+            background: #fff7f7;
+
+            animation: deleteCodeShake 0.22s ease;
+        }
+
+        @keyframes deleteCodeShake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .delete-generated-code {
+            margin-top: 9px;
+
+            color: #111827;
+
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .delete-generated-code strong {
+            display: inline-block;
+
+            margin-left: 4px;
+
+            padding: 4px 7px;
+
+            border-radius: 6px;
+
+            background: #f3f4f6;
+
+            font-family:
+                ui-monospace,
+                SFMono-Regular,
+                Menlo,
+                Monaco,
+                Consolas,
+                monospace;
+
+            letter-spacing: 2px;
+        }
+
+        .delete-modal-error {
+            min-height: 18px;
+
+            margin-top: 7px;
+
+            color: var(--red);
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .delete-modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 9px;
+
+            margin-top: 17px;
+        }
+
+        .delete-cancel-button,
+        .delete-confirm-button {
+            min-height: 39px;
+
+            border-radius: 9px;
+
+            padding: 0 14px;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .delete-cancel-button {
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #374151;
+        }
+
+        .delete-cancel-button:hover {
+            background: #f9fafb;
+        }
+
+        .delete-confirm-button {
+            border: 0;
+            background: var(--red);
+            color: #ffffff;
+        }
+
+        .delete-confirm-button:hover {
+            background: var(--red-dark);
+        }
+
+        .delete-confirm-button:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           RAW STATE DEBUG
+        ========================= */
+
+        .debug {
+            margin-top: 22px;
+        }
+
+        .debug details {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 15px 18px;
+            box-shadow: var(--shadow);
+            margin-bottom: 12px;
+        }
+
+        .debug summary {
+            cursor: pointer;
+            font-weight: 650;
+            font-size: 14px;
+        }
+
+        .debug pre {
+            margin: 15px 0 0;
+            padding: 15px;
+            background: #0f172a;
+            color: #e2e8f0;
+            border-radius: 10px;
+            overflow: auto;
+            max-height: 400px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 760px) {
+
+            .page {
+                width: min(100% - 20px, 700px);
+                padding-top: 20px;
+            }
+
+            .header {
+                align-items: flex-start;
+            }
+
+            .brand h1 {
+                font-size: 19px;
+            }
+
+            .modules {
+                grid-template-columns: 1fr;
+            }
+
+            .cleanup-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .clear-button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .header {
+                flex-direction: column;
+            }
+
+            .back-link {
+                width: 100%;
+                text-align: center;
+            }
+
+            .module-header {
+                padding: 15px;
+            }
+
+            .module-body {
+                padding: 14px 15px 16px;
+            }
+
+            .cleanup {
+                padding: 16px;
+            }
+
+            .section-delete-bar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .section-delete-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .section-delete-button {
+                flex: 1;
+            }
+
+            .delete-modal {
+                padding: 18px;
+            }
+
+            .delete-modal-actions {
+                flex-direction: column-reverse;
+            }
+
+            .delete-cancel-button,
+            .delete-confirm-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <header class="header">
+
+        <div class="header-top">
+
+            <div class="logo">
+                Dash<span>Board</span>
+            </div>
+
+            <div class="header-right">
+
+                <div id="status" class="status">
+                    Data Ready
+                </div>
+
+                <a
+                    href="../../index.html"
+                    class="home-button"
+                    aria-label="Back to Home"
+                    title="Back to Home"
+                >
+                    🏠
+                </a>
+
+                <button
+                    id="dictionaryButton"
+                    class="dictionary-button"
+                    aria-label="Open dictionary"
+                    title="Dictionary"
+                >
+                    🔎
+                </button>
+
+            </div>
+
+        </div>
+
+        <a
+            href="backup.html"
+            class="backup-button"
+            aria-label="Backup page"
+            title="Backup page"
+        >
+            Backup page
+        </a>
+
+    </header>
+
+
+    <div
+        class="storage-status"
+        id="storageStatus"
+    >
+
+        <div
+            class="status-dot"
+            id="statusDot"
+        ></div>
+
+        <div class="status-text">
+
+            <strong id="statusTitle">
+                Checking local data...
+            </strong>
+
+            <span id="statusDescription">
+                Reading application data from this browser.
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <main id="contentArea">
+
+        <div
+            class="modules"
+            id="modulesGrid"
+        >
+
+            <section class="module-card youtube">
+
+                <details class="module-dropdown">
+
+                    <summary>
+
+                        <div class="module-summary">
+
+                            <div class="module-header">
+
+                                <div class="module-icon">
+                                    ▶
+                                </div>
+
+                                <div class="module-title">
+
+                                    <h2>
+                                        YouTube Videos
+                                    </h2>
+
+                                    <p>
+                                        Shadowing module videos
+                                    </p>
+
+                                </div>
+
+                                <span
+                                    class="count-badge"
+                                    id="youtubeCount"
+                                >
+                                    0
+                                </span>
+
+                                <span class="dropdown-arrow">
+                                    ▼
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </summary>
+
+                    <div class="module-body">
+
+                        <div
+                            class="section-delete-bar"
+                            id="youtubeDeleteBar"
+                        >
+
+                            <div
+                                class="section-delete-info"
+                                id="youtubeDeleteInfo"
+                            >
+                                0 selected
+                            </div>
+
+                            <div class="section-delete-actions">
+
+                                <button
+                                    type="button"
+                                    class="section-select-all"
+                                    data-selection-section="youtube"
+                                >
+                                    Select All
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="section-delete-button"
+                                    data-delete-section="youtube"
+                                >
+                                    Delete Selected
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="data-list"
+                            id="youtubeList"
+                        ></div>
+
+                    </div>
+
+                </details>
+
+            </section>
+
+
+            <section class="module-card audio">
+
+                <details class="module-dropdown">
+
+                    <summary>
+
+                        <div class="module-summary">
+
+                            <div class="module-header">
+
+                                <div class="module-icon">
+                                    🎙️
+                                </div>
+
+                                <div class="module-title">
+
+                                    <h2>
+                                        Audio Recordings
+                                    </h2>
+
+                                    <p>
+                                        Speaking practice recordings
+                                    </p>
+
+                                </div>
+
+                                <span
+                                    class="count-badge"
+                                    id="audioCount"
+                                >
+                                    0
+                                </span>
+
+                                <span class="dropdown-arrow">
+                                    ▼
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </summary>
+
+                    <div class="module-body">
+
+                        <div
+                            class="section-delete-bar"
+                            id="audioDeleteBar"
+                        >
+
+                            <div
+                                class="section-delete-info"
+                                id="audioDeleteInfo"
+                            >
+                                0 selected
+                            </div>
+
+                            <div class="section-delete-actions">
+
+                                <button
+                                    type="button"
+                                    class="section-select-all"
+                                    data-selection-section="audio"
+                                >
+                                    Select All
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="section-delete-button"
+                                    data-delete-section="audio"
+                                >
+                                    Delete Selected
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="data-list"
+                            id="audioList"
+                        ></div>
+
+                    </div>
+
+                </details>
+
+            </section>
+
+
+            <section class="module-card transcripts">
+
+                <details class="module-dropdown">
+
+                    <summary>
+
+                        <div class="module-summary">
+
+                            <div class="module-header">
+
+                                <div class="module-icon">
+                                    📝
+                                </div>
+
+                                <div class="module-title">
+
+                                    <h2>
+                                        Transcripts
+                                    </h2>
+
+                                    <p>
+                                        Speech-to-text results
+                                    </p>
+
+                                </div>
+
+                                <span
+                                    class="count-badge"
+                                    id="transcriptCount"
+                                >
+                                    0
+                                </span>
+
+                                <span class="dropdown-arrow">
+                                    ▼
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </summary>
+
+                    <div class="module-body">
+
+                        <div
+                            class="section-delete-bar"
+                            id="transcriptDeleteBar"
+                        >
+
+                            <div
+                                class="section-delete-info"
+                                id="transcriptDeleteInfo"
+                            >
+                                0 selected
+                            </div>
+
+                            <div class="section-delete-actions">
+
+                                <button
+                                    type="button"
+                                    class="section-select-all"
+                                    data-selection-section="transcript"
+                                >
+                                    Select All
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="section-delete-button"
+                                    data-delete-section="transcript"
+                                >
+                                    Delete Selected
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div
+                            class="data-list"
+                            id="transcriptList"
+                        ></div>
+
+                    </div>
+
+                </details>
+
+            </section>
+
+
+            <section class="module-card wiki">
+
+                <details class="module-dropdown">
+
+                    <summary>
+
+                        <div class="module-summary">
+
+                            <div class="module-header">
+
+                                <div class="module-icon">
+                                    📖
+                                </div>
+
+                                <div class="module-title">
+
+                                    <h2>
+                                        Wiki &amp; Reading
+                                    </h2>
+
+                                    <p>
+                                        Saved reading resources
+                                    </p>
+
+                                </div>
+
+                                <span
+                                    class="count-badge"
+                                    id="wikiCount"
+                                >
+                                    0
+                                </span>
+
+                                <span class="dropdown-arrow">
+                                    ▼
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </summary>
+
+                    <div class="module-body">
+
+                        <div class="reading-group">
+
+                            <details class="reading-dropdown">
+
+                                <summary>
+
+                                    <div class="reading-group-title">
+
+                                        <strong>
+                                            Random Reading Pages
+                                        </strong>
+
+                                        <span
+                                            class="reading-badge"
+                                            id="randomPagesCount"
+                                        >
+                                            0
+                                        </span>
+
+                                    </div>
+
+                                </summary>
+
+                                <div
+                                    class="section-delete-bar"
+                                    id="randomPagesDeleteBar"
+                                >
+
+                                    <div
+                                        class="section-delete-info"
+                                        id="randomPagesDeleteInfo"
+                                    >
+                                        0 selected
+                                    </div>
+
+                                    <div class="section-delete-actions">
+
+                                        <button
+                                            type="button"
+                                            class="section-select-all"
+                                            data-selection-section="randomPages"
+                                        >
+                                            Select All
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="section-delete-button"
+                                            data-delete-section="randomPages"
+                                        >
+                                            Delete Selected
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="data-list"
+                                    id="randomPagesList"
+                                ></div>
+
+                            </details>
+
+                        </div>
+
+
+                        <div class="reading-group">
+
+                            <details class="reading-dropdown">
+
+                                <summary>
+
+                                    <div class="reading-group-title">
+
+                                        <strong>
+                                            Searched Topics
+                                        </strong>
+
+                                        <span
+                                            class="reading-badge"
+                                            id="searchedTopicsCount"
+                                        >
+                                            0
+                                        </span>
+
+                                    </div>
+
+                                </summary>
+
+                                <div
+                                    class="section-delete-bar"
+                                    id="searchedTopicsDeleteBar"
+                                >
+
+                                    <div
+                                        class="section-delete-info"
+                                        id="searchedTopicsDeleteInfo"
+                                    >
+                                        0 selected
+                                    </div>
+
+                                    <div class="section-delete-actions">
+
+                                        <button
+                                            type="button"
+                                            class="section-select-all"
+                                            data-selection-section="searchedTopics"
+                                        >
+                                            Select All
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            class="section-delete-button"
+                                            data-delete-section="searchedTopics"
+                                        >
+                                            Delete Selected
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="data-list"
+                                    id="searchedTopicsList"
+                                ></div>
+
+                            </details>
+
+                        </div>
+
+                    </div>
+
+                </details>
+
+            </section>
+
+
+            <section class="module-card future">
+
+                <details class="module-dropdown">
+
+                    <summary>
+
+                        <div class="module-summary">
+
+                            <div class="module-header">
+
+                                <div class="module-icon">
+                                    🧩
+                                </div>
+
+                                <div class="module-title">
+
+                                    <h2>
+                                        Future Modules
+                                    </h2>
+
+                                    <p>
+                                        Additional storage keys
+                                    </p>
+
+                                </div>
+
+                                <span class="dropdown-arrow">
+                                    ▼
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </summary>
+
+                    <div class="module-body">
+
+                        <div
+                            class="data-list"
+                            id="futureList"
+                        ></div>
+
+                    </div>
+
+                </details>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <section class="cleanup">
+
+        <div class="cleanup-content">
+
+            <div class="warning">
+
+                <div class="warning-icon">
+                    ⚠
+                </div>
+
+                <div>
+
+                    <h2>
+                        Clear Local Storage
+                    </h2>
+
+                    <p>
+                        Back up your data to Telegram before clearing
+                        local storage. This will remove your locally
+                        stored application data. Your Telegram
+                        credentials will be preserved.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <button
+                type="button"
+                class="clear-button"
+                id="clearStorageButton"
+            >
+                Clear Local Storage (Free Up Space)
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <section class="debug">
+
+        <details>
+
+            <summary>
+                View Raw Shadowing JSON
+            </summary>
+
+            <pre id="rawShadowingState">
+No Shadowing data loaded.
+            </pre>
+
+        </details>
+
+        <details>
+
+            <summary>
+                View Raw Reading JSON
+            </summary>
+
+            <pre id="rawReadingState">
+No Reading data loaded.
+            </pre>
+
+        </details>
+
+        <details>
+
+            <summary>
+                View Raw Speaking JSON
+            </summary>
+
+            <pre id="rawSpeakingState">
+No Speaking data loaded.
+            </pre>
+
+        </details>
+
+    </section>
+
+</div>
+
+
+<div
+    class="delete-modal-overlay"
+    id="deleteModalOverlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="deleteModalTitle"
+>
+
+    <div class="delete-modal">
+
+        <div class="delete-modal-icon">
+            🗑
+        </div>
+
+        <h2 id="deleteModalTitle">
+            Confirm deletion
+        </h2>
+
+        <p
+            class="delete-modal-description"
+            id="deleteModalDescription"
+        >
+            You are about to permanently delete selected items.
+        </p>
+
+        <div class="delete-modal-warning">
+            This action cannot be undone. The selected data will be
+            removed from this browser's local storage.
+        </div>
+
+        <div class="delete-code-box">
+
+            <label
+                class="delete-code-label"
+                for="deleteConfirmationInput"
+            >
+                Type the 6-digit confirmation code
+            </label>
+
+            <input
+                type="text"
+                id="deleteConfirmationInput"
+                class="delete-code"
+                inputmode="numeric"
+                autocomplete="off"
+                maxlength="6"
+                aria-label="6-digit confirmation code"
+            >
+
+            <div class="delete-generated-code">
+                Confirmation code:
+                <strong id="deleteGeneratedCode">
+                    ------
+                </strong>
+            </div>
+
+            <div
+                class="delete-modal-error"
+                id="deleteModalError"
+                aria-live="polite"
+            ></div>
+
+        </div>
+
+        <div class="delete-modal-actions">
+
+            <button
+                type="button"
+                class="delete-cancel-button"
+                id="deleteCancelButton"
+            >
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="delete-confirm-button"
+                id="deleteConfirmButton"
+            >
+                Permanently Delete
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+"use strict";
+
+
+/* =========================================================
+   STORAGE KEYS
+========================================================= */
+
+const MODULE_STORAGE_KEYS = {
+
+    shadowing:
+        "shadowing_data",
+
+    reading:
+        "reading_data",
+
+    speaking:
+        "speaking_data"
+
+};
+
+
+/* =========================================================
+   INDEPENDENT DELETE SELECTION STATE
+========================================================= */
+
+const deleteSelections = {
+
+    youtube:
+        new Set(),
+
+    audio:
+        new Set(),
+
+    transcript:
+        new Set(),
+
+    randomPages:
+        new Set(),
+
+    searchedTopics:
+        new Set()
+
+};
+
+
+let pendingDeletion = null;
+
+
+/* =========================================================
+   DOM HELPERS
+========================================================= */
+
+const $ = (selector) =>
+    document.querySelector(selector);
+
+
+const youtubeList =
+    $("#youtubeList");
+
+const youtubeCount =
+    $("#youtubeCount");
+
+
+const audioList =
+    $("#audioList");
+
+const audioCount =
+    $("#audioCount");
+
+
+const transcriptList =
+    $("#transcriptList");
+
+const transcriptCount =
+    $("#transcriptCount");
+
+
+const randomPagesList =
+    $("#randomPagesList");
+
+const searchedTopicsList =
+    $("#searchedTopicsList");
+
+const randomPagesCount =
+    $("#randomPagesCount");
+
+const searchedTopicsCount =
+    $("#searchedTopicsCount");
+
+const wikiCount =
+    $("#wikiCount");
+
+
+const futureList =
+    $("#futureList");
+
+
+const statusDot =
+    $("#statusDot");
+
+const statusTitle =
+    $("#statusTitle");
+
+const statusDescription =
+    $("#statusDescription");
+
+
+const rawShadowingState =
+    $("#rawShadowingState");
+
+const rawReadingState =
+    $("#rawReadingState");
+
+const rawSpeakingState =
+    $("#rawSpeakingState");
+
+
+const deleteModalOverlay =
+    $("#deleteModalOverlay");
+
+const deleteModalDescription =
+    $("#deleteModalDescription");
+
+const deleteConfirmationInput =
+    $("#deleteConfirmationInput");
+
+const deleteGeneratedCode =
+    $("#deleteGeneratedCode");
+
+const deleteModalError =
+    $("#deleteModalError");
+
+const deleteConfirmButton =
+    $("#deleteConfirmButton");
+
+const deleteCancelButton =
+    $("#deleteCancelButton");
+
+
+/* =========================================================
+   SAFE TEXT HELPER
+========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value ?? "")
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================================
+   SAFE URL
+========================================================= */
+
+function safeURL(value) {
+
+    try {
+
+        const url =
+            new URL(
+                String(value)
+            );
+
+
+        if (
+            url.protocol === "http:" ||
+            url.protocol === "https:"
+        ) {
+
+            return url.href;
+
+        }
+
+        return null;
+
+    } catch {
+
+        return null;
+
+    }
+
+}
+
+
+/* =========================================================
+   SAFE AUDIO DATA
+
+   IMPORTANT:
+   Accepts data URLs with optional media-type parameters,
+   including:
+
+   data:audio/webm;base64,...
+   data:audio/webm;codecs=opus;base64,...
+   data:audio/ogg;codecs=opus;base64,...
+   data:audio/mp4;base64,...
+
+   This is intentionally NOT restricted to:
+   data:audio/...;base64,
+========================================================= */
+
+function safeAudioData(value) {
+
+    if (
+        typeof value !== "string"
+    ) {
+
+        return null;
+
+    }
+
+
+    const audioData =
+        value.trim();
+
+
+    if (!audioData) {
+
+        return null;
+
+    }
+
+
+    if (
+        !/^data:audio\/[a-zA-Z0-9.+-]+(?:;[^,]*)?;base64,/i.test(
+            audioData
+        )
+    ) {
+
+        return null;
+
+    }
+
+
+    return audioData;
+
+}
+
+
+/* =========================================================
+   GENERIC LOCAL STORAGE READER
+========================================================= */
+
+function readLocalStorage(
+    key,
+    fallback = []
+) {
+
+    try {
+
+        const raw =
+            localStorage.getItem(
+                key
+            );
+
+
+        if (!raw) {
+
+            return fallback;
+
+        }
+
+
+        const parsed =
+            JSON.parse(
+                raw
+            );
+
+
+        if (
+            parsed === null ||
+            parsed === undefined
+        ) {
+
+            return fallback;
+
+        }
+
+
+        return parsed;
+
+    } catch (error) {
+
+        console.warn(
+            `[DataDisplay] Could not read "${key}":`,
+            error
+        );
+
+
+        return fallback;
+
+    }
+
+}
+
+
+/* =========================================================
+   YOUTUBE ID
+========================================================= */
+
+function cleanYouTubeId(id) {
+
+    return String(id)
+        .replace(
+            /[^a-zA-Z0-9_-]/g,
+            ""
+        )
+        .trim();
+
+}
+
+
+function getYouTubeId(value) {
+
+    if (
+        typeof value !== "string"
+    ) {
+
+        return null;
+
+    }
+
+
+    const cleanValue =
+        value.trim();
+
+
+    if (!cleanValue) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        const url =
+            new URL(
+                cleanValue
+            );
+
+
+        const hostname =
+            url.hostname.toLowerCase();
+
+
+        if (
+            hostname === "youtube.com" ||
+            hostname === "www.youtube.com" ||
+            hostname === "m.youtube.com"
+        ) {
+
+            const videoId =
+                url.searchParams.get(
+                    "v"
+                );
+
+
+            if (videoId) {
+
+                return cleanYouTubeId(
+                    videoId
+                );
+
+            }
+
+
+            const shorts =
+                url.pathname.match(
+                    /\/shorts\/([^/?]+)/
+                );
+
+
+            if (shorts) {
+
+                return cleanYouTubeId(
+                    shorts[1]
+                );
+
+            }
+
+
+            const embed =
+                url.pathname.match(
+                    /\/embed\/([^/?]+)/
+                );
+
+
+            if (embed) {
+
+                return cleanYouTubeId(
+                    embed[1]
+                );
+
+            }
+
+        }
+
+
+        if (
+            hostname === "youtu.be"
+        ) {
+
+            const videoId =
+                url.pathname
+                    .replace(
+                        /^\/+/,
+                        ""
+                    )
+                    .split("/")[0];
+
+
+            if (videoId) {
+
+                return cleanYouTubeId(
+                    videoId
+                );
+
+            }
+
+        }
+
+    } catch {
+
+        return null;
+
+    }
+
+
+    return null;
+
+}
+
+
+/* =========================================================
+   SHADOWING DATA
+========================================================= */
+
+function loadShadowingData() {
+
+    const stored =
+        readLocalStorage(
+            MODULE_STORAGE_KEYS.shadowing,
+            []
+        );
+
+
+    if (
+        !Array.isArray(stored)
+    ) {
+
+        console.warn(
+            "[DataDisplay] shadowing_data is not an array."
+        );
+
+
+        return [];
+
+    }
+
+
+    return stored.filter(
+        item => {
+
+            return (
+                typeof item === "string" &&
+                getYouTubeId(item) !== null
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   DELETE BAR UPDATE
+========================================================= */
+
+const deleteBarConfig = {
+
+    youtube: {
+        bar: "youtubeDeleteBar",
+        info: "youtubeDeleteInfo"
+    },
+
+    audio: {
+        bar: "audioDeleteBar",
+        info: "audioDeleteInfo"
+    },
+
+    transcript: {
+        bar: "transcriptDeleteBar",
+        info: "transcriptDeleteInfo"
+    },
+
+    randomPages: {
+        bar: "randomPagesDeleteBar",
+        info: "randomPagesDeleteInfo"
+    },
+
+    searchedTopics: {
+        bar: "searchedTopicsDeleteBar",
+        info: "searchedTopicsDeleteInfo"
+    }
+
+};
+
+
+function updateDeleteBar(
+    section
+) {
+
+    const config =
+        deleteBarConfig[section];
+
+
+    if (!config) {
+
+        return;
+
+    }
+
+
+    const bar =
+        document.getElementById(
+            config.bar
+        );
+
+
+    const info =
+        document.getElementById(
+            config.info
+        );
+
+
+    if (!bar || !info) {
+
+        return;
+
+    }
+
+
+    const count =
+        deleteSelections[section].size;
+
+
+    if (count > 0) {
+
+        bar.classList.add(
+            "visible"
+        );
+
+
+        info.textContent =
+            `${count} item${
+                count === 1
+                    ? ""
+                    : "s"
+            } selected`;
+
+    } else {
+
+        bar.classList.remove(
+            "visible"
+        );
+
+
+        info.textContent =
+            "0 selected";
+
+    }
+
+}
+
+
+/* =========================================================
+   GENERIC ITEM DELETE UI
+========================================================= */
+
+function createDeleteControls(
+    section,
+    index
+) {
+
+    const selected =
+        deleteSelections[section]
+            .has(index);
+
+
+    return `
+        <input
+            type="checkbox"
+            class="item-select-checkbox"
+            data-delete-checkbox="${escapeHTML(section)}"
+            data-delete-index="${index}"
+            ${selected ? "checked" : ""}
+            aria-label="Select item for deletion"
+        >
+
+        <button
+            type="button"
+            class="item-delete-control ${
+                selected ? "selected" : ""
+            }"
+            data-delete-item="${escapeHTML(section)}"
+            data-delete-index="${index}"
+            aria-label="${
+                selected
+                    ? "Remove item from deletion selection"
+                    : "Select item for deletion"
+            }"
+            title="${
+                selected
+                    ? "Remove from selection"
+                    : "Select for deletion"
+            }"
+        >
+            🗑
+        </button>
+    `;
+
+}
+
+
+/* =========================================================
+   TOGGLE DELETE SELECTION
+========================================================= */
+
+function toggleDeleteSelection(
+    section,
+    index
+) {
+
+    if (
+        !deleteSelections[section]
+    ) {
+
+        return;
+
+    }
+
+
+    const numericIndex =
+        Number(index);
+
+
+    if (
+        !Number.isInteger(
+            numericIndex
+        ) ||
+        numericIndex < 0
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        deleteSelections[section]
+            .has(numericIndex)
+    ) {
+
+        deleteSelections[section]
+            .delete(numericIndex);
+
+    } else {
+
+        deleteSelections[section]
+            .add(numericIndex);
+
+    }
+
+
+    updateDeleteBar(
+        section
+    );
+
+
+    refreshSelectionVisuals(
+        section
+    );
+
+}
+
+
+/* =========================================================
+   REFRESH ONLY SELECTION VISUALS
+========================================================= */
+
+function refreshSelectionVisuals(
+    section
+) {
+
+    document
+        .querySelectorAll(
+            `[data-delete-item="${section}"]`
+        )
+        .forEach(
+            button => {
+
+                const index =
+                    Number(
+                        button.dataset.deleteIndex
+                    );
+
+
+                const selected =
+                    deleteSelections[section]
+                        .has(index);
+
+
+                button.classList.toggle(
+                    "selected",
+                    selected
+                );
+
+
+                button.setAttribute(
+                    "aria-label",
+                    selected
+                        ? "Remove item from deletion selection"
+                        : "Select item for deletion"
+                );
+
+
+                button.setAttribute(
+                    "title",
+                    selected
+                        ? "Remove from selection"
+                        : "Select for deletion"
+                );
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            `[data-delete-checkbox="${section}"]`
+        )
+        .forEach(
+            checkbox => {
+
+                const index =
+                    Number(
+                        checkbox.dataset.deleteIndex
+                    );
+
+
+                checkbox.checked =
+                    deleteSelections[section]
+                        .has(index);
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            `[data-delete-item="${section}"]`
+        )
+        .forEach(
+            button => {
+
+                const item =
+                    button.closest(
+                        ".data-item"
+                    );
+
+
+                if (!item) {
+
+                    return;
+
+                }
+
+
+                const index =
+                    Number(
+                        button.dataset.deleteIndex
+                    );
+
+
+                item.classList.toggle(
+                    "selected",
+                    deleteSelections[section]
+                        .has(index)
+                );
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   RENDER SHADOWING
+========================================================= */
+
+function renderShadowing() {
+
+    const videos =
+        loadShadowingData();
+
+
+    youtubeCount.textContent =
+        videos.length;
+
+
+    if (
+        videos.length === 0
+    ) {
+
+        deleteSelections.youtube.clear();
+
+        updateDeleteBar(
+            "youtube"
+        );
+
+
+        youtubeList.innerHTML = `
+            <div class="no-data">
+                No Shadowing videos found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    deleteSelections.youtube =
+        new Set(
+            [...deleteSelections.youtube]
+                .filter(
+                    index =>
+                        index >= 0 &&
+                        index < videos.length
+                )
+        );
+
+
+    youtubeList.innerHTML =
+        videos.map(
+            (
+                url,
+                index
+            ) => {
+
+                const validURL =
+                    safeURL(
+                        url
+                    );
+
+
+                const videoId =
+                    getYouTubeId(
+                        url
+                    );
+
+
+                const title =
+                    `YouTube Video ${index + 1}`;
+
+
+                if (!validURL) {
+
+                    return `
+                        <div class="data-item">
+
+                            ${createDeleteControls(
+                                "youtube",
+                                index
+                            )}
+
+                            <div class="data-item-main">
+
+                                <div class="data-item-title">
+                                    ${escapeHTML(title)}
+                                </div>
+
+                                <div class="data-meta">
+                                    Invalid URL
+                                </div>
+
+                            </div>
+
+                        </div>
+                    `;
+
+                }
+
+
+                return `
+                    <div class="data-item">
+
+                        ${createDeleteControls(
+                            "youtube",
+                            index
+                        )}
+
+                        <div class="data-item-main">
+
+                            <div class="data-item-title">
+
+                                <a
+                                    href="${escapeHTML(validURL)}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    ${escapeHTML(title)}
+                                </a>
+
+                            </div>
+
+                            <div class="data-meta">
+                                ${escapeHTML(validURL)}
+                            </div>
+
+                            ${
+                                videoId
+                                    ? `
+                                        <div class="data-meta">
+                                            Video ID:
+                                            ${escapeHTML(videoId)}
+                                        </div>
+                                    `
+                                    : ""
+                            }
+
+                        </div>
+
+                    </div>
+                `;
+
+            }
+        ).join("");
+
+
+    updateDeleteBar(
+        "youtube"
+    );
+
+}
+
+
+/* =========================================================
+   SPEAKING DATA
+========================================================= */
+
+function loadSpeakingData() {
+
+    const stored =
+        readLocalStorage(
+            MODULE_STORAGE_KEYS.speaking,
+            {}
+        );
+
+
+    if (
+        !stored ||
+        typeof stored !== "object" ||
+        Array.isArray(stored)
+    ) {
+
+        return {
+
+            version:
+                1,
+
+            topics:
+                [],
+
+            recordings:
+                [],
+
+            transcripts:
+                []
+
+        };
+
+    }
+
+
+    return {
+
+        version:
+            stored.version ?? 1,
+
+        topics:
+            Array.isArray(
+                stored.topics
+            )
+                ? stored.topics
+                : [],
+
+        recordings:
+            Array.isArray(
+                stored.recordings
+            )
+                ? stored.recordings
+                : [],
+
+        transcripts:
+            Array.isArray(
+                stored.transcripts
+            )
+                ? stored.transcripts
+                : []
+
+    };
+
+}
+
+
+/* =========================================================
+   SPEAKING TIMESTAMP
+========================================================= */
+
+function formatSpeakingTimestamp(
+    timestamp
+) {
+
+    if (
+        timestamp === null ||
+        timestamp === undefined ||
+        timestamp === ""
+    ) {
+
+        return "No timestamp";
+
+    }
+
+
+    const date =
+        new Date(
+            Number(timestamp)
+        );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "Invalid timestamp";
+
+    }
+
+
+    return date.toLocaleString();
+
+}
+
+
+/* =========================================================
+   SPEAKING DURATION
+========================================================= */
+
+function formatDuration(
+    duration
+) {
+
+    if (
+        duration === null ||
+        duration === undefined ||
+        duration === ""
+    ) {
+
+        return "";
+
+    }
+
+
+    const number =
+        Number(
+            duration
+        );
+
+
+    if (
+        Number.isNaN(number) ||
+        number < 0
+    ) {
+
+        return "";
+
+    }
+
+
+    const totalSeconds =
+        Math.floor(
+            number > 100
+                ? number / 1000
+                : number
+        );
+
+
+    const minutes =
+        Math.floor(
+            totalSeconds / 60
+        );
+
+
+    const seconds =
+        totalSeconds % 60;
+
+
+    return (
+        `${minutes}:${String(seconds).padStart(2, "0")}`
+    );
+
+}
+
+
+/* =========================================================
+   SORT SPEAKING ITEMS
+========================================================= */
+
+function sortSpeakingItems(
+    items
+) {
+
+    return items
+        .map(
+            (
+                item,
+                originalIndex
+            ) => ({
+                item,
+                originalIndex
+            })
+        )
+        .sort(
+            (
+                a,
+                b
+            ) => {
+
+                const timeA =
+                    Number(
+                        a.item?.createdAt
+                    ) || 0;
+
+
+                const timeB =
+                    Number(
+                        b.item?.createdAt
+                    ) || 0;
+
+
+                return timeB - timeA;
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   RENDER SPEAKING AUDIO
+========================================================= */
+
+function renderSpeakingAudio() {
+
+    const speakingData =
+        loadSpeakingData();
+
+
+    const recordings =
+        sortSpeakingItems(
+            speakingData.recordings
+        );
+
+
+    audioCount.textContent =
+        recordings.length;
+
+
+    if (
+        recordings.length === 0
+    ) {
+
+        deleteSelections.audio.clear();
+
+        updateDeleteBar(
+            "audio"
+        );
+
+
+        audioList.innerHTML = `
+            <div class="no-data">
+                No Speaking recordings found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    deleteSelections.audio =
+        new Set(
+            [...deleteSelections.audio]
+                .filter(
+                    index =>
+                        index >= 0 &&
+                        index < speakingData.recordings.length
+                )
+        );
+
+
+    audioList.innerHTML =
+        recordings.map(
+            (
+                entry,
+                displayIndex
+            ) => {
+
+                const recording =
+                    entry.item;
+
+
+                const originalIndex =
+                    entry.originalIndex;
+
+
+                const filename =
+                    recording?.filename ||
+                    `Recording ${displayIndex + 1}`;
+
+
+                const topic =
+                    recording?.topic ||
+                    "";
+
+
+                const mode =
+                    recording?.mode ||
+                    "";
+
+
+                const createdAt =
+                    formatSpeakingTimestamp(
+                        recording?.createdAt
+                    );
+
+
+                const duration =
+                    formatDuration(
+                        recording?.duration
+                    );
+
+
+                /*
+                    IMPORTANT:
+                    audioData may contain:
+                    data:audio/webm;codecs=opus;base64,...
+
+                    safeAudioData() now accepts that format.
+                */
+
+                const audioData =
+                    safeAudioData(
+                        recording?.audioData
+                    );
+
+
+                return `
+                    <div class="data-item">
+
+                        ${createDeleteControls(
+                            "audio",
+                            originalIndex
+                        )}
+
+                        <div class="data-item-main">
+
+                            <div class="data-item-title">
+                                ${escapeHTML(filename)}
+                            </div>
+
+                            ${
+                                topic
+                                    ? `
+                                        <div class="data-meta">
+                                            Topic:
+                                            ${escapeHTML(topic)}
+                                        </div>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                mode
+                                    ? `
+                                        <div class="data-meta">
+                                            Mode:
+                                            ${escapeHTML(mode)}
+                                        </div>
+                                    `
+                                    : ""
+                            }
+
+                            <div class="data-meta">
+
+                                ${
+                                    duration
+                                        ? `Duration: ${escapeHTML(duration)} • `
+                                        : ""
+                                }
+
+                                ${escapeHTML(createdAt)}
+
+                            </div>
+
+                            ${
+                                audioData
+                                    ? `
+                                        <audio
+                                            class="speaking-audio"
+                                            controls
+                                            preload="metadata"
+                                        >
+                                            <source
+                                                src="${escapeHTML(audioData)}"
+                                                ${
+                                                    recording?.mimeType
+                                                        ? `type="${escapeHTML(recording.mimeType)}"`
+                                                        : ""
+                                                }
+                                            >
+                                            Your browser does not support audio playback.
+                                        </audio>
+                                    `
+                                    : `
+                                        <div class="data-meta">
+                                            Audio data is not available.
+                                        </div>
+                                    `
+                            }
+
+                        </div>
+
+                    </div>
+                `;
+
+            }
+        ).join("");
+
+
+    updateDeleteBar(
+        "audio"
+    );
+
+}
+
+
+/* =========================================================
+   RENDER SPEAKING TRANSCRIPTS
+========================================================= */
+
+function renderSpeakingTranscripts() {
+
+    const speakingData =
+        loadSpeakingData();
+
+
+    const transcripts =
+        sortSpeakingItems(
+            speakingData.transcripts
+        );
+
+
+    transcriptCount.textContent =
+        transcripts.length;
+
+
+    if (
+        transcripts.length === 0
+    ) {
+
+        deleteSelections.transcript.clear();
+
+        updateDeleteBar(
+            "transcript"
+        );
+
+
+        transcriptList.innerHTML = `
+            <div class="no-data">
+                No Speaking transcripts found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    deleteSelections.transcript =
+        new Set(
+            [...deleteSelections.transcript]
+                .filter(
+                    index =>
+                        index >= 0 &&
+                        index < speakingData.transcripts.length
+                )
+        );
+
+
+    transcriptList.innerHTML =
+        transcripts.map(
+            (
+                entry,
+                index
+            ) => {
+
+                const transcript =
+                    entry.item;
+
+
+                const originalIndex =
+                    entry.originalIndex;
+
+
+                const text =
+                    transcript?.text ||
+                    "Empty transcript";
+
+
+                const createdAt =
+                    formatSpeakingTimestamp(
+                        transcript?.createdAt
+                    );
+
+
+                return `
+                    <div class="data-item">
+
+                        ${createDeleteControls(
+                            "transcript",
+                            originalIndex
+                        )}
+
+                        <div class="data-item-main">
+
+                            <div class="data-item-title">
+                                Transcript ${index + 1}
+                            </div>
+
+                            <div class="data-meta">
+                                ${escapeHTML(createdAt)}
+                            </div>
+
+                            <div class="speaking-transcript">
+                                ${escapeHTML(text)}
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }
+        ).join("");
+
+
+    updateDeleteBar(
+        "transcript"
+    );
+
+}
+
+
+/* =========================================================
+   READING DATA
+========================================================= */
+
+function loadReadingData() {
+
+    const stored =
+        readLocalStorage(
+            MODULE_STORAGE_KEYS.reading,
+            {}
+        );
+
+
+    return {
+
+        randomPages:
+            Array.isArray(
+                stored?.randomPages
+            )
+                ? stored.randomPages
+                : [],
+
+
+        searchedTopics:
+            Array.isArray(
+                stored?.searchedTopics
+            )
+                ? stored.searchedTopics
+                : []
+
+    };
+
+}
+
+
+/* =========================================================
+   TIMESTAMP FORMATTER
+========================================================= */
+
+function formatTimestamp(
+    timestamp
+) {
+
+    if (
+        timestamp === null ||
+        timestamp === undefined ||
+        timestamp === ""
+    ) {
+
+        return "No timestamp";
+
+    }
+
+
+    const date =
+        new Date(
+            Number(timestamp)
+        );
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "Invalid timestamp";
+
+    }
+
+
+    return date.toLocaleString();
+
+}
+
+
+/* =========================================================
+   SORT READING DATA
+========================================================= */
+
+function sortReadingItems(
+    items
+) {
+
+    return items
+        .map(
+            (
+                item,
+                originalIndex
+            ) => ({
+                item,
+                originalIndex
+            })
+        )
+        .sort(
+            (
+                a,
+                b
+            ) => {
+
+                const timeA =
+                    Number(
+                        a.item?.timestamp
+                    ) || 0;
+
+
+                const timeB =
+                    Number(
+                        b.item?.timestamp
+                    ) || 0;
+
+
+                return timeB - timeA;
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   CREATE READING ITEM
+========================================================= */
+
+function createReadingItem(
+    entry,
+    section
+) {
+
+    const item =
+        entry.item;
+
+
+    const originalIndex =
+        entry.originalIndex;
+
+
+    const title =
+        item?.title ||
+        "Untitled Reading Page";
+
+
+    const url =
+        item?.url ||
+        "";
+
+
+    const validURL =
+        safeURL(
+            url
+        );
+
+
+    const timestamp =
+        formatTimestamp(
+            item?.timestamp
+        );
+
+
+    const controls =
+        createDeleteControls(
+            section,
+            originalIndex
+        );
+
+
+    if (validURL) {
+
+        return `
+            <div class="data-item">
+
+                ${controls}
+
+                <div class="data-item-main">
+
+                    <div class="data-item-title">
+
+                        <a
+                            href="${escapeHTML(validURL)}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            ${escapeHTML(title)}
+                        </a>
+
+                    </div>
+
+                    <div class="data-meta">
+                        ${escapeHTML(validURL)}
+                    </div>
+
+                    <div class="data-meta">
+                        Saved:
+                        ${escapeHTML(timestamp)}
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+    }
+
+
+    return `
+        <div class="data-item">
+
+            ${controls}
+
+            <div class="data-item-main">
+
+                <div class="data-item-title">
+                    ${escapeHTML(title)}
+                </div>
+
+                <div class="data-meta">
+                    ${
+                        url
+                            ? "Invalid or unavailable URL"
+                            : "No URL saved"
+                    }
+                </div>
+
+                <div class="data-meta">
+                    Saved:
+                    ${escapeHTML(timestamp)}
+                </div>
+
+            </div>
+
+        </div>
+    `;
+
+}
+
+
+/* =========================================================
+   RENDER READING
+========================================================= */
+
+function renderWiki() {
+
+    const readingData =
+        loadReadingData();
+
+
+    const randomPages =
+        sortReadingItems(
+            readingData.randomPages
+        );
+
+
+    const searchedTopics =
+        sortReadingItems(
+            readingData.searchedTopics
+        );
+
+
+    wikiCount.textContent =
+        randomPages.length +
+        searchedTopics.length;
+
+
+    randomPagesCount.textContent =
+        randomPages.length;
+
+
+    searchedTopicsCount.textContent =
+        searchedTopics.length;
+
+
+    deleteSelections.randomPages =
+        new Set(
+            [...deleteSelections.randomPages]
+                .filter(
+                    index =>
+                        index >= 0 &&
+                        index < readingData.randomPages.length
+                )
+        );
+
+
+    deleteSelections.searchedTopics =
+        new Set(
+            [...deleteSelections.searchedTopics]
+                .filter(
+                    index =>
+                        index >= 0 &&
+                        index < readingData.searchedTopics.length
+                )
+        );
+
+
+    if (
+        randomPages.length === 0
+    ) {
+
+        deleteSelections.randomPages.clear();
+
+        randomPagesList.innerHTML = `
+            <div class="no-data">
+                No random reading pages saved.
+            </div>
+        `;
+
+    } else {
+
+        randomPagesList.innerHTML =
+            randomPages
+                .map(
+                    entry =>
+                        createReadingItem(
+                            entry,
+                            "randomPages"
+                        )
+                )
+                .join("");
+
+    }
+
+
+    if (
+        searchedTopics.length === 0
+    ) {
+
+        deleteSelections.searchedTopics.clear();
+
+        searchedTopicsList.innerHTML = `
+            <div class="no-data">
+                No searched reading topics saved.
+            </div>
+        `;
+
+    } else {
+
+        searchedTopicsList.innerHTML =
+            searchedTopics
+                .map(
+                    entry =>
+                        createReadingItem(
+                            entry,
+                            "searchedTopics"
+                        )
+                )
+                .join("");
+
+    }
+
+
+    updateDeleteBar(
+        "randomPages"
+    );
+
+
+    updateDeleteBar(
+        "searchedTopics"
+    );
+
+}
+
+
+/* =========================================================
+   FUTURE MODULES
+========================================================= */
+
+function renderFutureModules() {
+
+    const knownKeys =
+        new Set([
+            "shadowing_data",
+            "reading_data",
+            "speaking_data",
+            "tg_token",
+            "tg_chat_id"
+        ]);
+
+
+    const keys =
+        Object.keys(
+            localStorage
+        ).filter(
+            key =>
+                !knownKeys.has(key)
+        );
+
+
+    if (
+        keys.length === 0
+    ) {
+
+        futureList.innerHTML = `
+            <div class="future-module">
+
+                <strong>
+                    No additional module data yet
+                </strong>
+
+                <span>
+                    Future modules will appear here
+                    when their storage keys are integrated.
+                </span>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    futureList.innerHTML =
+        keys.map(
+            key => {
+
+                let value;
+
+
+                try {
+
+                    value =
+                        JSON.parse(
+                            localStorage.getItem(
+                                key
+                            )
+                        );
+
+                } catch {
+
+                    value =
+                        localStorage.getItem(
+                            key
+                        );
+
+                }
+
+
+                let description;
+
+
+                if (
+                    Array.isArray(value)
+                ) {
+
+                    description =
+                        `${value.length} item${
+                            value.length === 1
+                                ? ""
+                                : "s"
+                        }`;
+
+                } else if (
+                    value &&
+                    typeof value === "object"
+                ) {
+
+                    description =
+                        `${Object.keys(value).length} stored field${
+                            Object.keys(value).length === 1
+                                ? ""
+                                : "s"
+                        }`;
+
+                } else {
+
+                    description =
+                        String(
+                            value ?? ""
+                        );
+
+                }
+
+
+                return `
+                    <div class="future-module">
+
+                        <strong>
+                            ${escapeHTML(key)}
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(description)}
+                        </span>
+
+                    </div>
+                `;
+
+            }
+        ).join("");
+
+}
+
+
+/* =========================================================
+   RAW SHADOWING DATA
+========================================================= */
+
+function renderRawShadowingData() {
+
+    const shadowingData =
+        readLocalStorage(
+            MODULE_STORAGE_KEYS.shadowing,
+            []
+        );
+
+
+    rawShadowingState.textContent =
+        JSON.stringify(
+            {
+                shadowing_data:
+                    shadowingData
+            },
+            null,
+            2
+        );
+
+}
+
+
+/* =========================================================
+   RAW READING DATA
+========================================================= */
+
+function renderRawReadingData() {
+
+    const readingData =
+        readLocalStorage(
+            MODULE_STORAGE_KEYS.reading,
+            {}
+        );
+
+
+    rawReadingState.textContent =
+        JSON.stringify(
+            {
+                reading_data:
+                    readingData
+            },
+            null,
+            2
+        );
+
+}
+
+
+/* =========================================================
+   RAW SPEAKING DATA
+========================================================= */
+
+function renderRawSpeakingData() {
+
+    const speakingData =
+        readLocalStorage(
+            MODULE_STORAGE_KEYS.speaking,
+            {}
+        );
+
+
+    rawSpeakingState.textContent =
+        JSON.stringify(
+            {
+                speaking_data:
+                    speakingData
+            },
+            null,
+            2
+        );
+
+}
+
+
+/* =========================================================
+   STORAGE STATUS
+========================================================= */
+
+function updateStorageStatus() {
+
+    const shadowingData =
+        loadShadowingData();
+
+
+    const readingData =
+        loadReadingData();
+
+
+    const speakingData =
+        loadSpeakingData();
+
+
+    const shadowingCount =
+        shadowingData.length;
+
+
+    const readingCount =
+        readingData.randomPages.length +
+        readingData.searchedTopics.length;
+
+
+    const speakingAudioCount =
+        speakingData.recordings.length;
+
+
+    const speakingTranscriptCount =
+        speakingData.transcripts.length;
+
+
+    const total =
+        shadowingCount +
+        readingCount +
+        speakingAudioCount +
+        speakingTranscriptCount;
+
+
+    if (
+        total > 0
+    ) {
+
+        statusDot.classList.remove(
+            "empty"
+        );
+
+
+        statusTitle.textContent =
+            "Local application data found";
+
+
+        statusDescription.textContent =
+            `${shadowingCount} Shadowing video${
+                shadowingCount === 1
+                    ? ""
+                    : "s"
+            }, ${speakingAudioCount} Speaking recording${
+                speakingAudioCount === 1
+                    ? ""
+                    : "s"
+            }, ${speakingTranscriptCount} transcript${
+                speakingTranscriptCount === 1
+                    ? ""
+                    : "s"
+            } and ${readingCount} Reading entr${
+                readingCount === 1
+                    ? "y"
+                    : "ies"
+            } loaded from this browser.`;
+
+
+        return;
+
+    }
+
+
+    statusDot.classList.add(
+        "empty"
+    );
+
+
+    statusTitle.textContent =
+        "No module data found";
+
+
+    statusDescription.textContent =
+        "No Shadowing, Speaking or Reading data is currently saved in this browser.";
+
+}
+
+
+/* =========================================================
+   LOAD DATA DISPLAY
+========================================================= */
+
+function loadDataDisplay() {
+
+    renderShadowing();
+
+    renderSpeakingAudio();
+
+    renderSpeakingTranscripts();
+
+    renderWiki();
+
+    renderFutureModules();
+
+    renderRawShadowingData();
+
+    renderRawReadingData();
+
+    renderRawSpeakingData();
+
+    updateStorageStatus();
+
+}
+
+
+/* =========================================================
+   GENERATE RANDOM 6-DIGIT CODE
+========================================================= */
+
+function generateDeleteCode() {
+
+    return String(
+        Math.floor(
+            100000 +
+            Math.random() * 900000
+        )
+    );
+
+}
+
+
+/* =========================================================
+   OPEN DELETE CONFIRMATION
+========================================================= */
+
+function openDeleteConfirmation(
+    section
+) {
+
+    const selectedIndexes =
+        [...deleteSelections[section]]
+            .sort(
+                (a, b) => a - b
+            );
+
+
+    if (
+        selectedIndexes.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    const code =
+        generateDeleteCode();
+
+
+    pendingDeletion = {
+
+        section,
+
+        indexes:
+            selectedIndexes,
+
+        code
+
+    };
+
+
+    deleteGeneratedCode.textContent =
+        code;
+
+
+    deleteConfirmationInput.value =
+        "";
+
+
+    deleteModalError.textContent =
+        "";
+
+
+    deleteConfirmationInput.classList.remove(
+        "invalid"
+    );
+
+
+    deleteModalDescription.textContent =
+        `You selected ${selectedIndexes.length} item${
+            selectedIndexes.length === 1
+                ? ""
+                : "s"
+        } from this section. Enter the 6-digit code to permanently delete them.`;
+
+
+    deleteConfirmButton.disabled =
+        false;
+
+
+    deleteModalOverlay.classList.add(
+        "visible"
+    );
+
+
+    document.body.style.overflow =
+        "hidden";
+
+
+    setTimeout(
+        () => {
+
+            deleteConfirmationInput.focus();
+
+        },
+        50
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE DELETE CONFIRMATION
+========================================================= */
+
+function closeDeleteConfirmation() {
+
+    pendingDeletion =
+        null;
+
+
+    deleteModalOverlay.classList.remove(
+        "visible"
+    );
+
+
+    document.body.style.overflow =
+        "";
+
+
+    deleteConfirmationInput.value =
+        "";
+
+
+    deleteModalError.textContent =
+        "";
+
+
+    deleteConfirmationInput.classList.remove(
+        "invalid"
+    );
+
+}
+
+
+/* =========================================================
+   DELETE SHADOWING ITEMS
+========================================================= */
+
+function deleteShadowingItems(
+    indexes
+) {
+
+    const stored =
+        readLocalStorage(
+            MODULE_STORAGE_KEYS.shadowing,
+            []
+        );
+
+
+    if (
+        !Array.isArray(stored)
+    ) {
+
+        return false;
+
+    }
+
+
+    const indexesToDelete =
+        new Set(
+            indexes
+        );
+
+
+    const updated =
+        stored.filter(
+            (
+                _item,
+                index
+            ) =>
+                !indexesToDelete.has(
+                    index
+                )
+        );
+
+
+    localStorage.setItem(
+        MODULE_STORAGE_KEYS.shadowing,
+        JSON.stringify(
+            updated
+        )
+    );
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   DELETE SPEAKING ITEMS
+========================================================= */
+
+function deleteSpeakingItems(
+    type,
+    indexes
+) {
+
+    const stored =
+        readLocalStorage(
+            MODULE_STORAGE_KEYS.speaking,
+            {}
+        );
+
+
+    if (
+        !stored ||
+        typeof stored !== "object" ||
+        Array.isArray(stored)
+    ) {
+
+        return false;
+
+    }
+
+
+    const property =
+        type === "audio"
+            ? "recordings"
+            : "transcripts";
+
+
+    if (
+        !Array.isArray(
+            stored[property]
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    const indexesToDelete =
+        new Set(
+            indexes
+        );
+
+
+    stored[property] =
+        stored[property].filter(
+            (
+                _item,
+                index
+            ) =>
+                !indexesToDelete.has(
+                    index
+                )
+        );
+
+
+    localStorage.setItem(
+        MODULE_STORAGE_KEYS.speaking,
+        JSON.stringify(
+            stored
+        )
+    );
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   DELETE READING ITEMS
+========================================================= */
+
+function deleteReadingItems(
+    type,
+    indexes
+) {
+
+    const stored =
+        readLocalStorage(
+            MODULE_STORAGE_KEYS.reading,
+            {}
+        );
+
+
+    if (
+        !stored ||
+        typeof stored !== "object" ||
+        Array.isArray(stored)
+    ) {
+
+        return false;
+
+    }
+
+
+    const property =
+        type === "randomPages"
+            ? "randomPages"
+            : "searchedTopics";
+
+
+    if (
+        !Array.isArray(
+            stored[property]
+        )
+    ) {
+
+        return false;
+
+    }
+
+
+    const indexesToDelete =
+        new Set(
+            indexes
+        );
+
+
+    stored[property] =
+        stored[property].filter(
+            (
+                _item,
+                index
+            ) =>
+                !indexesToDelete.has(
+                    index
+                )
+        );
+
+
+    localStorage.setItem(
+        MODULE_STORAGE_KEYS.reading,
+        JSON.stringify(
+            stored
+        )
+    );
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   EXECUTE CONFIRMED DELETION
+========================================================= */
+
+function executeConfirmedDeletion() {
+
+    if (!pendingDeletion) {
+
+        return;
+
+    }
+
+
+    const {
+        section,
+        indexes,
+        code
+    } = pendingDeletion;
+
+
+    const enteredCode =
+        deleteConfirmationInput.value
+            .replace(
+                /\D/g,
+                ""
+            )
+            .slice(
+                0,
+                6
+            );
+
+
+    if (
+        enteredCode !== code
+    ) {
+
+        deleteConfirmationInput.classList.remove(
+            "invalid"
+        );
+
+
+        void deleteConfirmationInput.offsetWidth;
+
+
+        deleteConfirmationInput.classList.add(
+            "invalid"
+        );
+
+
+        deleteModalError.textContent =
+            "The confirmation code is incorrect. Nothing was deleted.";
+
+
+        deleteConfirmationInput.focus();
+
+
+        return;
+
+    }
+
+
+    let success =
+        false;
+
+
+    try {
+
+        if (
+            section === "youtube"
+        ) {
+
+            success =
+                deleteShadowingItems(
+                    indexes
+                );
+
+            deleteSelections.youtube.clear();
+
+        }
+
+        else if (
+            section === "audio"
+        ) {
+
+            success =
+                deleteSpeakingItems(
+                    "audio",
+                    indexes
+                );
+
+            deleteSelections.audio.clear();
+
+        }
+
+        else if (
+            section === "transcript"
+        ) {
+
+            success =
+                deleteSpeakingItems(
+                    "transcript",
+                    indexes
+                );
+
+            deleteSelections.transcript.clear();
+
+        }
+
+        else if (
+            section === "randomPages"
+        ) {
+
+            success =
+                deleteReadingItems(
+                    "randomPages",
+                    indexes
+                );
+
+            deleteSelections.randomPages.clear();
+
+        }
+
+        else if (
+            section === "searchedTopics"
+        ) {
+
+            success =
+                deleteReadingItems(
+                    "searchedTopics",
+                    indexes
+                );
+
+            deleteSelections.searchedTopics.clear();
+
+        }
+
+
+        if (!success) {
+
+            deleteModalError.textContent =
+                "The data could not be deleted. Nothing was changed.";
+
+
+            return;
+
+        }
+
+
+        closeDeleteConfirmation();
+
+
+        loadDataDisplay();
+
+    } catch (error) {
+
+        console.error(
+            "[DataDisplay] Deletion failed:",
+            error
+        );
+
+
+        deleteModalError.textContent =
+            "An error occurred. Nothing was deleted.";
+
+    }
+
+}
+
+
+/* =========================================================
+   SELECT ALL / CLEAR ALL FOR ONE SECTION
+========================================================= */
+
+function toggleSelectAll(
+    section
+) {
+
+    if (
+        !deleteSelections[section]
+    ) {
+
+        return;
+
+    }
+
+
+    let totalItems = 0;
+
+
+    if (
+        section === "youtube"
+    ) {
+
+        totalItems =
+            loadShadowingData()
+                .length;
+
+    }
+
+    else if (
+        section === "audio"
+    ) {
+
+        totalItems =
+            loadSpeakingData()
+                .recordings
+                .length;
+
+    }
+
+    else if (
+        section === "transcript"
+    ) {
+
+        totalItems =
+            loadSpeakingData()
+                .transcripts
+                .length;
+
+    }
+
+    else if (
+        section === "randomPages"
+    ) {
+
+        totalItems =
+            loadReadingData()
+                .randomPages
+                .length;
+
+    }
+
+    else if (
+        section === "searchedTopics"
+    ) {
+
+        totalItems =
+            loadReadingData()
+                .searchedTopics
+                .length;
+
+    }
+
+
+    if (
+        totalItems === 0
+    ) {
+
+        return;
+
+    }
+
+
+    const currentCount =
+        deleteSelections[section]
+            .size;
+
+
+    if (
+        currentCount === totalItems
+    ) {
+
+        deleteSelections[section].clear();
+
+    } else {
+
+        deleteSelections[section] =
+            new Set(
+                Array.from(
+                    {
+                        length:
+                            totalItems
+                    },
+                    (
+                        _,
+                        index
+                    ) => index
+                )
+            );
+
+    }
+
+
+    updateDeleteBar(
+        section
+    );
+
+
+    refreshSelectionVisuals(
+        section
+    );
+
+}
+
+
+/* =========================================================
+   EVENT DELEGATION FOR DELETE ICONS / CHECKBOXES
+========================================================= */
+
+document.addEventListener(
+    "click",
+    event => {
+
+        const deleteButton =
+            event.target.closest(
+                "[data-delete-item]"
+            );
+
+
+        if (
+            deleteButton
+        ) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            toggleDeleteSelection(
+                deleteButton.dataset.deleteItem,
+                deleteButton.dataset.deleteIndex
+            );
+
+
+            return;
+
+        }
+
+
+        const deleteSectionButton =
+            event.target.closest(
+                "[data-delete-section]"
+            );
+
+
+        if (
+            deleteSectionButton
+        ) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            const section =
+                deleteSectionButton.dataset.deleteSection;
+
+
+            openDeleteConfirmation(
+                section
+            );
+
+
+            return;
+
+        }
+
+
+        const selectAllButton =
+            event.target.closest(
+                "[data-selection-section]"
+            );
+
+
+        if (
+            selectAllButton
+        ) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+
+            toggleSelectAll(
+                selectAllButton.dataset.selectionSection
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CHECKBOX CHANGE HANDLER
+========================================================= */
+
+document.addEventListener(
+    "change",
+    event => {
+
+        const checkbox =
+            event.target.closest(
+                "[data-delete-checkbox]"
+            );
+
+
+        if (
+            !checkbox
+        ) {
+
+            return;
+
+        }
+
+
+        event.stopPropagation();
+
+
+        const section =
+            checkbox.dataset.deleteCheckbox;
+
+
+        const index =
+            Number(
+                checkbox.dataset.deleteIndex
+            );
+
+
+        if (
+            !Number.isInteger(index)
+        ) {
+
+            return;
+
+        }
+
+
+        const currentSelection =
+            deleteSelections[section];
+
+
+        if (!currentSelection) {
+
+            return;
+
+        }
+
+
+        if (
+            checkbox.checked
+        ) {
+
+            currentSelection.add(
+                index
+            );
+
+        } else {
+
+            currentSelection.delete(
+                index
+            );
+
+        }
+
+
+        updateDeleteBar(
+            section
+        );
+
+
+        refreshSelectionVisuals(
+            section
+        );
+
+    }
+);
+
+
+/* =========================================================
+   DELETE MODAL EVENTS
+========================================================= */
+
+deleteCancelButton.addEventListener(
+    "click",
+    () => {
+
+        closeDeleteConfirmation();
+
+    }
+);
+
+
+deleteConfirmButton.addEventListener(
+    "click",
+    () => {
+
+        executeConfirmedDeletion();
+
+    }
+);
+
+
+deleteConfirmationInput.addEventListener(
+    "input",
+    () => {
+
+        deleteConfirmationInput.value =
+            deleteConfirmationInput.value
+                .replace(
+                    /\D/g,
+                    ""
+                )
+                .slice(
+                    0,
+                    6
+                );
+
+
+        deleteModalError.textContent =
+            "";
+
+
+        deleteConfirmationInput.classList.remove(
+            "invalid"
+        );
+
+    }
+);
+
+
+deleteConfirmationInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            event.preventDefault();
+
+            executeConfirmedDeletion();
+
+        }
+
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            event.preventDefault();
+
+            closeDeleteConfirmation();
+
+        }
+
+    }
+);
+
+
+deleteModalOverlay.addEventListener(
+    "click",
+    event => {
+
+        if (
+            event.target ===
+            deleteModalOverlay
+        ) {
+
+            closeDeleteConfirmation();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape" &&
+            deleteModalOverlay.classList.contains(
+                "visible"
+            )
+        ) {
+
+            closeDeleteConfirmation();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CLEAR LOCAL STORAGE
+========================================================= */
+
+function clearLocalStorageSafely() {
+
+    const confirmed =
+        window.confirm(
+            "WARNING!\n\n" +
+            "This will clear your local application data and cache.\n\n" +
+            "Make sure you have backed up your data to Telegram before continuing.\n\n" +
+            "Your Telegram bot token and chat ID will be preserved.\n\n" +
+            "Do you want to continue?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    const telegramToken =
+        localStorage.getItem(
+            "tg_token"
+        );
+
+
+    const telegramChatId =
+        localStorage.getItem(
+            "tg_chat_id"
+        );
+
+
+    try {
+
+        localStorage.clear();
+
+
+        if (
+            telegramToken !== null
+        ) {
+
+            localStorage.setItem(
+                "tg_token",
+                telegramToken
+            );
+
+        }
+
+
+        if (
+            telegramChatId !== null
+        ) {
+
+            localStorage.setItem(
+                "tg_chat_id",
+                telegramChatId
+            );
+
+        }
+
+
+        window.alert(
+            "Local storage cleared successfully.\n\n" +
+            "Your Telegram credentials were preserved."
+        );
+
+
+        window.location.reload();
+
+    } catch (error) {
+
+        console.error(
+            "Could not clear local storage:",
+            error
+        );
+
+
+        try {
+
+            if (
+                telegramToken !== null
+            ) {
+
+                localStorage.setItem(
+                    "tg_token",
+                    telegramToken
+                );
+
+            }
+
+
+            if (
+                telegramChatId !== null
+            ) {
+
+                localStorage.setItem(
+                    "tg_chat_id",
+                    telegramChatId
+                );
+
+            }
+
+        } catch (restoreError) {
+
+            console.error(
+                "Could not restore Telegram credentials:",
+                restoreError
+            );
+
+        }
+
+
+        window.alert(
+            "The local storage cleanup could not be completed."
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CLEAR BUTTON
+========================================================= */
+
+$("#clearStorageButton")
+    .addEventListener(
+        "click",
+        clearLocalStorageSafely
+    );
+
+
+/* =========================================================
+   STORAGE EVENT
+========================================================= */
+
+window.addEventListener(
+    "storage",
+    event => {
+
+        if (
+            event.key ===
+            MODULE_STORAGE_KEYS.shadowing ||
+
+            event.key ===
+            MODULE_STORAGE_KEYS.reading ||
+
+            event.key ===
+            MODULE_STORAGE_KEYS.speaking ||
+
+            event.key === null
+        ) {
+
+            loadDataDisplay();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        loadDataDisplay();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
