@@ -1,0 +1,4318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+
+<title>English Speaking Practice</title>
+
+<style>
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    margin:0;
+    padding:0;
+    width:100%;
+    min-height:100%;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f5faff;
+    color:#17202a;
+}
+
+button,
+select{
+    font:inherit;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+}
+
+button:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+:root{
+    --blue:#0ea5e9;
+    --blue-dark:#0284c7;
+    --blue-light:#e0f2fe;
+    --blue-pale:#f0f9ff;
+
+    --text:#17202a;
+    --muted:#64748b;
+
+    --border:#dbe7ef;
+    --card:#ffffff;
+
+    --red:#ef4444;
+    --red-light:#fee2e2;
+
+    --green:#16a34a;
+
+    --shadow:0 8px 25px rgba(15,23,42,.06);
+}
+
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app{
+    width:100%;
+    max-width:900px;
+    min-height:100vh;
+    margin:0 auto;
+    padding:16px;
+}
+
+
+/* =========================================================
+   /* =========================================================
+HEADER
+========================================================= */
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    border-radius: 13px;
+    font-size: 20px;
+}
+
+.brand h1 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.2;
+}
+
+.brand p {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+
+/* =========================================================
+BACK TO HOME BUTTON
+========================================================= */
+
+.home-button {
+    width: 42px;
+    height: 42px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    border: none;
+    border-radius: 13px;
+    
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    
+    text-decoration: none;
+    font-size: 19px;
+    
+    cursor: pointer;
+    
+    transition:
+        background .2s ease,
+        transform .2s ease;
+}
+
+.home-button:hover {
+    background: var(--blue-dark);
+    color: #fff;
+}
+
+.home-button:active {
+    transform: scale(.92);
+}
+
+/* =========================================================
+   TABS
+========================================================= */
+
+.tabs{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:4px;
+    padding:4px;
+    margin-bottom:16px;
+    background:#e8f1f6;
+    border-radius:14px;
+}
+
+.tab{
+    padding:11px 6px;
+    border-radius:10px;
+    background:transparent;
+    color:var(--muted);
+    font-weight:700;
+}
+
+.tab.active{
+    background:#fff;
+    color:var(--blue-dark);
+    box-shadow:0 2px 8px rgba(0,0,0,.07);
+}
+
+
+/* =========================================================
+   VIEWS
+========================================================= */
+
+.view{
+    display:none;
+}
+
+.view.active{
+    display:block;
+}
+
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:17px;
+    padding:17px;
+    margin-bottom:16px;
+    box-shadow:var(--shadow);
+}
+
+.section-title{
+    margin:0 0 4px;
+    font-size:16px;
+}
+
+.section-subtitle{
+    margin:0;
+    color:var(--muted);
+    font-size:12px;
+}
+
+
+/* =========================================================
+   TOPIC
+========================================================= */
+
+.topic-box{
+    min-height:125px;
+    margin-top:15px;
+    padding:18px;
+    border:1px dashed #a9d9f2;
+    border-radius:14px;
+    background:var(--blue-pale);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.topic-label{
+    margin-bottom:7px;
+    color:var(--blue-dark);
+    font-size:10px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+}
+
+.topic-text{
+    font-size:20px;
+    line-height:1.4;
+    font-weight:700;
+}
+
+.generate-btn{
+    margin-top:13px;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.btn{
+    padding:11px 15px;
+    border-radius:11px;
+    font-weight:700;
+    transition:transform .15s,background .15s;
+}
+
+.btn:active{
+    transform:scale(.98);
+}
+
+.btn-primary{
+    color:#fff;
+    background:var(--blue);
+}
+
+.btn-primary:hover{
+    background:var(--blue-dark);
+}
+
+.btn-secondary{
+    color:#334155;
+    background:#edf3f7;
+}
+
+.btn-secondary:hover{
+    background:#e2ebf0;
+}
+
+.btn-danger{
+    color:#b91c1c;
+    background:var(--red-light);
+}
+
+.btn-small{
+    padding:7px 10px;
+    font-size:12px;
+}
+
+
+/* =========================================================
+   MODE
+========================================================= */
+
+.mode-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:15px;
+}
+
+.mode-card{
+    padding:14px;
+    border:1.5px solid var(--border);
+    border-radius:13px;
+    background:#fff;
+    text-align:left;
+}
+
+.mode-card.active{
+    border-color:var(--blue);
+    background:var(--blue-pale);
+}
+
+.mode-title{
+    font-size:14px;
+    font-weight:750;
+}
+
+.mode-desc{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.4;
+}
+
+
+/* =========================================================
+   CONTROLS
+========================================================= */
+
+.control-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:15px;
+}
+
+.control label{
+    display:block;
+    margin-bottom:7px;
+    color:#475569;
+    font-size:12px;
+    font-weight:700;
+}
+
+.select{
+    width:100%;
+    min-height:42px;
+    padding:10px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    background:#fff;
+    color:var(--text);
+    outline:none;
+}
+
+.select:focus{
+    border-color:var(--blue);
+}
+
+
+/* =========================================================
+   RECORDER
+========================================================= */
+
+.recorder{
+    text-align:center;
+}
+
+.timer{
+    margin-top:3px;
+    font-size:44px;
+    line-height:1.1;
+    font-weight:800;
+    font-variant-numeric:tabular-nums;
+}
+
+.timer-label{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:12px;
+}
+
+.record-status{
+    min-height:26px;
+    margin:10px 0 14px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:7px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.live-dot{
+    display:none;
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:var(--red);
+}
+
+.recorder.recording .live-dot{
+    display:block;
+    animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+    0%,100%{
+        opacity:.35;
+        transform:scale(.85);
+    }
+
+    50%{
+        opacity:1;
+        transform:scale(1.15);
+    }
+}
+
+.recorder-buttons{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:9px;
+}
+
+.record-btn{
+    min-width:145px;
+    padding:13px 20px;
+}
+
+
+/* =========================================================
+   TRANSCRIPTION MODULE
+========================================================= */
+
+.transcription-intro{
+    margin-top:15px;
+    padding:15px;
+    border:1px dashed #a9d9f2;
+    border-radius:14px;
+    background:var(--blue-pale);
+}
+
+.transcription-icon{
+    width:45px;
+    height:45px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:10px;
+    border-radius:13px;
+    background:var(--blue-light);
+    color:var(--blue-dark);
+    font-size:21px;
+}
+
+.transcription-intro-title{
+    font-size:15px;
+    font-weight:750;
+}
+
+.transcription-intro-text{
+    margin-top:5px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.5;
+}
+
+.transcriber{
+    text-align:center;
+}
+
+.transcriber-status{
+    min-height:30px;
+    margin:13px 0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    color:var(--muted);
+    font-size:13px;
+}
+
+.transcriber-dot{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:#94a3b8;
+}
+
+.transcriber.listening .transcriber-dot{
+    background:var(--red);
+    animation:pulse 1s infinite;
+}
+
+.transcript-box{
+    min-height:180px;
+    margin-top:10px;
+    padding:15px;
+    border:1px solid var(--border);
+    border-radius:13px;
+    background:#f8fafc;
+    color:#334155;
+    font-size:15px;
+    line-height:1.6;
+    text-align:left;
+    white-space:pre-wrap;
+    overflow-wrap:break-word;
+}
+
+.transcript-placeholder{
+    color:#94a3b8;
+}
+
+.transcriber-buttons{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-top:13px;
+}
+
+.transcriber-btn{
+    min-width:135px;
+}
+
+.support-box{
+    margin-top:15px;
+    padding:11px 13px;
+    border-radius:11px;
+    background:#f8fafc;
+    border:1px solid var(--border);
+    color:var(--muted);
+    font-size:11px;
+    line-height:1.5;
+    text-align:left;
+}
+
+.support-box strong{
+    color:#334155;
+}
+
+
+/* =========================================================
+   ARCHIVE
+========================================================= */
+
+.archive-section{
+    margin-bottom:25px;
+}
+
+.archive-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.archive-heading h2{
+    margin:0;
+    font-size:15px;
+}
+
+.count{
+    padding:4px 8px;
+    border-radius:20px;
+    background:var(--blue-light);
+    color:var(--blue-dark);
+    font-size:11px;
+    font-weight:800;
+}
+
+.empty{
+    padding:24px 15px;
+    border:1px dashed var(--border);
+    border-radius:13px;
+    color:var(--muted);
+    text-align:center;
+    font-size:13px;
+}
+
+.record-item{
+    margin-bottom:10px;
+    padding:14px;
+    border:1px solid var(--border);
+    border-radius:14px;
+    background:#fff;
+}
+
+.record-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+}
+
+.filename{
+    font-size:13px;
+    font-weight:750;
+    word-break:break-all;
+}
+
+.timestamp{
+    margin-top:4px;
+    color:var(--muted);
+    font-size:11px;
+}
+
+.topic-meta{
+    margin-top:10px;
+    padding:8px 10px;
+    border-radius:9px;
+    background:var(--blue-pale);
+    color:#334155;
+    font-size:12px;
+}
+
+.audio-player{
+    width:100%;
+    height:38px;
+    margin-top:11px;
+}
+
+.record-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:7px;
+    margin-top:9px;
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:20px;
+    z-index:1000;
+
+    max-width:90%;
+    padding:10px 15px;
+
+    border-radius:10px;
+
+    background:#17202a;
+    color:#fff;
+
+    font-size:12px;
+    text-align:center;
+
+    transform:translate(-50%,120px);
+    transition:transform .25s ease;
+}
+
+.toast.show{
+    transform:translate(-50%,0);
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:600px){
+
+    .app{
+        padding:12px;
+    }
+
+    .card{
+        padding:15px;
+    }
+
+    .mode-grid,
+    .control-grid{
+        grid-template-columns:1fr;
+    }
+
+    .topic-text{
+        font-size:18px;
+    }
+
+    .timer{
+        font-size:40px;
+    }
+
+    .record-top{
+        flex-direction:column;
+    }
+
+    .record-actions{
+        justify-content:stretch;
+    }
+
+    .record-actions button{
+        flex:1;
+    }
+
+    .tab{
+        font-size:12px;
+        padding:11px 4px;
+    }
+
+    .transcript-box{
+        min-height:160px;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+<header class="header">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            🎙️
+        </div>
+
+        <div>
+            <h1>Speaking Practice</h1>
+            <p>Practice English by speaking every day</p>
+        </div>
+
+    </div>
+
+
+    <!-- BACK TO HOME -->
+
+    <a
+        href="../../index.html"
+        class="home-button"
+        aria-label="Back to Home"
+        title="Back to Home"
+    >
+        🏠
+    </a>
+
+</header>
+
+    <!-- =====================================================
+         TABS
+    ====================================================== -->
+
+    <nav class="tabs">
+
+        <button
+            id="practiceTab"
+            class="tab active"
+            type="button">
+            Practice
+        </button>
+
+        <button
+            id="recordingsTab"
+            class="tab"
+            type="button">
+            Recordings
+        </button>
+
+        <button
+            id="transcriptionTab"
+            class="tab"
+            type="button">
+            Transcription
+        </button>
+
+    </nav>
+
+
+    <!-- =====================================================
+         PRACTICE VIEW
+    ====================================================== -->
+
+    <main
+        id="practiceView"
+        class="view active">
+
+        <!-- TOPIC -->
+
+        <section class="card">
+
+            <h2 class="section-title">
+                Speaking Topic
+            </h2>
+
+            <p class="section-subtitle">
+                Generate a topic and speak naturally.
+            </p>
+
+            <div class="topic-box">
+
+                <div class="topic-label">
+                    Your Topic
+                </div>
+
+                <div
+                    id="topicText"
+                    class="topic-text">
+                    Press "Generate Topic" to begin.
+                </div>
+
+            </div>
+
+            <button
+                id="generateTopicBtn"
+                class="btn btn-primary generate-btn"
+                type="button">
+                Generate Topic
+            </button>
+
+        </section>
+
+
+        <!-- SETTINGS -->
+
+        <section class="card">
+
+            <h2 class="section-title">
+                Practice Settings
+            </h2>
+
+            <p class="section-subtitle">
+                Choose your speaking mode and countdown.
+            </p>
+
+
+            <div class="mode-grid">
+
+                <button
+                    id="freeMode"
+                    class="mode-card active"
+                    type="button">
+
+                    <div class="mode-title">
+                        Free Talk
+                    </div>
+
+                    <div class="mode-desc">
+                        Speak for as long as you want.
+                        Pause and resume whenever needed.
+                    </div>
+
+                </button>
+
+
+                <button
+                    id="challengeMode"
+                    class="mode-card"
+                    type="button">
+
+                    <div class="mode-title">
+                        60 Sec Challenge
+                    </div>
+
+                    <div class="mode-desc">
+                        Speak continuously for 60 seconds.
+                        Pausing is disabled.
+                    </div>
+
+                </button>
+
+            </div>
+
+
+            <div class="control-grid">
+
+                <div class="control">
+
+                    <label for="countdownSelect">
+                        Start Countdown
+                    </label>
+
+                    <select
+                        id="countdownSelect"
+                        class="select">
+
+                        <option value="2">
+                            2 seconds
+                        </option>
+
+                        <option value="3">
+                            3 seconds
+                        </option>
+
+                        <option value="5" selected>
+                            5 seconds
+                        </option>
+
+                        <option value="10">
+                            10 seconds
+                        </option>
+
+                        <option value="15">
+                            15 seconds
+                        </option>
+
+                        <option value="30">
+                            30 seconds
+                        </option>
+
+                        <option value="45">
+                            45 seconds
+                        </option>
+
+                        <option value="60">
+                            60 seconds
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="control">
+
+                    <label>
+                        Current Mode
+                    </label>
+
+                    <div
+                        id="modeDisplay"
+                        class="select"
+                        style="background:#f8fafc;">
+                        Free Talk
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RECORDER -->
+
+        <section
+            id="recorderCard"
+            class="card recorder">
+
+            <div
+                id="timer"
+                class="timer">
+                00:00
+            </div>
+
+            <div
+                id="timerLabel"
+                class="timer-label">
+                Ready
+            </div>
+
+
+            <div
+                id="recordStatus"
+                class="record-status">
+
+                <span class="live-dot"></span>
+
+                <span id="statusText">
+                    Generate a topic and press Record.
+                </span>
+
+            </div>
+
+
+            <div class="recorder-buttons">
+
+                <button
+                    id="recordBtn"
+                    class="btn btn-primary record-btn"
+                    type="button">
+                    ● Record
+                </button>
+
+
+                <button
+                    id="pauseBtn"
+                    class="btn btn-secondary record-btn"
+                    type="button"
+                    style="display:none;">
+                    Pause
+                </button>
+
+
+                <button
+                    id="saveBtn"
+                    class="btn btn-primary record-btn"
+                    type="button"
+                    style="display:none;">
+                    Save
+                </button>
+
+
+                <button
+                    id="cancelBtn"
+                    class="btn btn-secondary record-btn"
+                    type="button"
+                    style="display:none;">
+                    Cancel
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         RECORDINGS VIEW
+    ====================================================== -->
+
+    <main
+        id="recordingsView"
+        class="view">
+
+        <section class="card">
+
+            <h2 class="section-title">
+                Recording Archive
+            </h2>
+
+            <p class="section-subtitle">
+                Saved recordings are stored locally on this device.
+            </p>
+
+        </section>
+
+
+        <section class="archive-section">
+
+            <div class="archive-heading">
+
+                <h2>
+                    Free Talk Recordings
+                </h2>
+
+                <span
+                    id="freeCount"
+                    class="count">
+                    0
+                </span>
+
+            </div>
+
+            <div id="freeRecordings"></div>
+
+        </section>
+
+
+        <section class="archive-section">
+
+            <div class="archive-heading">
+
+                <h2>
+                    60-Second Challenge Recordings
+                </h2>
+
+                <span
+                    id="challengeCount"
+                    class="count">
+                    0
+                </span>
+
+            </div>
+
+            <div id="challengeRecordings"></div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         TRANSCRIPTION VIEW
+    ====================================================== -->
+
+    <main
+        id="transcriptionView"
+        class="view">
+
+        <section class="card">
+
+            <h2 class="section-title">
+                Speech Transcription
+            </h2>
+
+            <p class="section-subtitle">
+                Speak naturally and convert your speech into text.
+            </p>
+
+
+            <div class="transcription-intro">
+
+                <div class="transcription-icon">
+                    🗣️
+                </div>
+
+                <div class="transcription-intro-title">
+                    Speak → Text
+                </div>
+
+                <div class="transcription-intro-text">
+                    This tool only converts your live speech
+                    into text. It does not record or save
+                    your audio.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section
+            id="transcriber"
+            class="card transcriber">
+
+            <div
+                id="transcriberStatus"
+                class="transcriber-status">
+
+                <span
+                    id="transcriberDot"
+                    class="transcriber-dot">
+                </span>
+
+                <span id="transcriberStatusText">
+                    Ready
+                </span>
+
+            </div>
+
+
+            <div
+                id="transcriptBox"
+                class="transcript-box">
+
+                <span class="transcript-placeholder">
+                    Your spoken words will appear here...
+                </span>
+
+            </div>
+
+
+            <div class="transcriber-buttons">
+
+                <button
+                    id="startTranscriptionBtn"
+                    class="btn btn-primary transcriber-btn"
+                    type="button">
+                    🎙️ Start
+                </button>
+
+
+                <button
+                    id="stopTranscriptionBtn"
+                    class="btn btn-secondary transcriber-btn"
+                    type="button"
+                    disabled>
+                    Stop
+                </button>
+
+
+                <button
+                    id="clearTranscriptionBtn"
+                    class="btn btn-secondary transcriber-btn"
+                    type="button">
+                    Clear
+                </button>
+
+
+                <button
+                    id="copyTranscriptionBtn"
+                    class="btn btn-secondary transcriber-btn"
+                    type="button">
+                    Copy
+                </button>
+
+            </div>
+
+
+            <div class="support-box">
+
+                <strong>
+                    How it works:
+                </strong>
+
+                Speak after pressing Start.
+                Your browser converts your speech
+                into text in real time.
+
+                <br><br>
+
+                <strong>
+                    Important:
+                </strong>
+
+                This module does not use MediaRecorder,
+                does not create an audio file,
+                and does not save your voice recording.
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<div
+    id="toast"
+    class="toast">
+</div>
+
+<script>
+"use strict";
+
+
+/* =========================================================
+   UNIFIED LOCAL STORAGE SERVICE
+========================================================= */
+
+const LOCAL_STORAGE_KEYS = {
+    SPEAKING: "speaking_data"
+};
+
+
+/*
+ * Unified safe localStorage reader.
+ */
+function getFromLocal(key, fallback = null){
+
+    try{
+
+        const raw =
+            localStorage.getItem(key);
+
+        if(!raw){
+            return fallback;
+        }
+
+        const parsed =
+            JSON.parse(raw);
+
+        return parsed;
+
+    }catch(error){
+
+        console.warn(
+            "localStorage read error:",
+            key,
+            error
+        );
+
+        return fallback;
+    }
+}
+
+
+/*
+ * Unified safe localStorage writer.
+ */
+function saveToLocal(key, data){
+
+    try{
+
+        localStorage.setItem(
+            key,
+            JSON.stringify(data)
+        );
+
+        return true;
+
+    }catch(error){
+
+        console.error(
+            "localStorage write error:",
+            key,
+            error
+        );
+
+        return false;
+    }
+}
+
+
+/*
+ * Get the complete Speaking module state.
+ *
+ * Safe fallback is always returned if
+ * storage is empty/corrupted.
+ */
+function getSpeakingData(){
+
+    const fallback = {
+        version: 1,
+        topics: [],
+        recordings: [],
+        transcripts: []
+    };
+
+
+    const data =
+        getFromLocal(
+            LOCAL_STORAGE_KEYS.SPEAKING,
+            fallback
+        );
+
+
+    if(
+        !data ||
+        typeof data !== "object"
+    ){
+
+        return fallback;
+    }
+
+
+    if(!Array.isArray(data.topics)){
+        data.topics = [];
+    }
+
+
+    if(!Array.isArray(data.recordings)){
+        data.recordings = [];
+    }
+
+
+    if(!Array.isArray(data.transcripts)){
+        data.transcripts = [];
+    }
+
+
+    if(typeof data.version !== "number"){
+        data.version = 1;
+    }
+
+
+    return data;
+}
+
+
+/*
+ * Save the complete Speaking state.
+ */
+function saveSpeakingData(data){
+
+    return saveToLocal(
+        LOCAL_STORAGE_KEYS.SPEAKING,
+        data
+    );
+}
+
+
+/*
+ * Add an item to one of the Speaking
+ * module collections.
+ */
+function appendSpeakingData(
+    collection,
+    item
+){
+
+    const data =
+        getSpeakingData();
+
+
+    if(
+        !Array.isArray(
+            data[collection]
+        )
+    ){
+
+        data[collection] = [];
+    }
+
+
+    data[collection].push(item);
+
+
+    const saved =
+        saveSpeakingData(data);
+
+
+    if(!saved){
+
+        /*
+         * Remove the item again if saving failed.
+         */
+        data[collection].pop();
+    }
+
+
+    return saved;
+}
+
+
+/*
+ * Convert Blob -> Base64 data URL.
+ *
+ * This allows audio to survive page reloads
+ * without IndexedDB.
+ */
+function blobToDataURL(blob){
+
+    return new Promise(
+        function(resolve,reject){
+
+            if(!blob){
+
+                reject(
+                    new Error(
+                        "No audio blob available."
+                    )
+                );
+
+                return;
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function(){
+
+                    resolve(
+                        reader.result
+                    );
+                };
+
+
+            reader.onerror =
+                function(){
+
+                    reject(
+                        reader.error ||
+                        new Error(
+                            "Could not read audio blob."
+                        )
+                    );
+                };
+
+
+            reader.readAsDataURL(blob);
+
+        }
+    );
+}
+
+
+/*
+ * Create an audio Blob from a stored
+ * Base64 data URL.
+ */
+function dataURLToBlob(dataURL){
+
+    try{
+
+        if(
+            typeof dataURL !== "string" ||
+            !dataURL
+        ){
+
+            return null;
+        }
+
+
+        const parts =
+            dataURL.split(",");
+
+
+        if(parts.length !== 2){
+            return null;
+        }
+
+
+        const header =
+            parts[0];
+
+
+        const base64 =
+            parts[1];
+
+
+        const mimeMatch =
+            header.match(
+                /data:([^;]+);base64/
+            );
+
+
+        const mimeType =
+            mimeMatch
+                ? mimeMatch[1]
+                : "audio/webm";
+
+
+        const binary =
+            atob(base64);
+
+
+        const bytes =
+            new Uint8Array(
+                binary.length
+            );
+
+
+        for(
+            let i = 0;
+            i < binary.length;
+            i++
+        ){
+
+            bytes[i] =
+                binary.charCodeAt(i);
+        }
+
+
+        return new Blob(
+            [bytes],
+            {
+                type:mimeType
+            }
+        );
+
+    }catch(error){
+
+        console.error(
+            "Audio conversion error:",
+            error
+        );
+
+        return null;
+    }
+}
+
+
+/* =========================================================
+   TOPIC LIST
+========================================================= */
+
+const TOPICS = [
+
+    "Describe your daily routine.",
+    "What is your favorite food and why?",
+    "Describe your best friend.",
+    "What do you usually do on weekends?",
+    "Talk about a place you want to visit.",
+    "What is your favorite movie?",
+    "Describe your dream job.",
+    "What makes you happy?",
+    "Talk about something you learned recently.",
+    "What would you do if you had a free day?",
+    "Describe your hometown.",
+    "What is your favorite game?",
+    "Talk about your morning routine.",
+    "What are three things you cannot live without?",
+    "Describe your ideal house.",
+    "What do you want to achieve this year?",
+    "Talk about a difficult experience you overcame.",
+    "What is something you would like to learn?",
+    "Describe your favorite season.",
+    "What makes a good friend?",
+    "Talk about your favorite YouTube channel.",
+    "If you could meet anyone, who would you meet?",
+    "What would you do with one million dollars?",
+    "Describe your perfect day.",
+    "What habit do you want to develop?",
+    "Talk about your favorite childhood memory.",
+    "What is something you are proud of?",
+    "Describe your favorite teacher.",
+    "What does success mean to you?",
+    "What are your plans for the future?"
+
+];
+
+
+/* =========================================================
+   DOM REFERENCES
+========================================================= */
+
+const practiceTab =
+    document.getElementById("practiceTab");
+
+const recordingsTab =
+    document.getElementById("recordingsTab");
+
+const transcriptionTab =
+    document.getElementById("transcriptionTab");
+
+
+const practiceView =
+    document.getElementById("practiceView");
+
+const recordingsView =
+    document.getElementById("recordingsView");
+
+const transcriptionView =
+    document.getElementById("transcriptionView");
+
+
+const topicText =
+    document.getElementById("topicText");
+
+const generateTopicBtn =
+    document.getElementById("generateTopicBtn");
+
+
+const freeMode =
+    document.getElementById("freeMode");
+
+const challengeMode =
+    document.getElementById("challengeMode");
+
+const modeDisplay =
+    document.getElementById("modeDisplay");
+
+
+const countdownSelect =
+    document.getElementById("countdownSelect");
+
+
+const recorderCard =
+    document.getElementById("recorderCard");
+
+const timer =
+    document.getElementById("timer");
+
+const timerLabel =
+    document.getElementById("timerLabel");
+
+const statusText =
+    document.getElementById("statusText");
+
+
+const recordBtn =
+    document.getElementById("recordBtn");
+
+const pauseBtn =
+    document.getElementById("pauseBtn");
+
+const saveBtn =
+    document.getElementById("saveBtn");
+
+const cancelBtn =
+    document.getElementById("cancelBtn");
+
+
+const freeRecordings =
+    document.getElementById("freeRecordings");
+
+const challengeRecordings =
+    document.getElementById("challengeRecordings");
+
+const freeCount =
+    document.getElementById("freeCount");
+
+const challengeCount =
+    document.getElementById("challengeCount");
+
+
+/* =========================================================
+   TRANSCRIPTION DOM
+========================================================= */
+
+const transcriber =
+    document.getElementById("transcriber");
+
+const transcriberStatusText =
+    document.getElementById("transcriberStatusText");
+
+const transcriptBox =
+    document.getElementById("transcriptBox");
+
+const startTranscriptionBtn =
+    document.getElementById("startTranscriptionBtn");
+
+const stopTranscriptionBtn =
+    document.getElementById("stopTranscriptionBtn");
+
+const clearTranscriptionBtn =
+    document.getElementById("clearTranscriptionBtn");
+
+const copyTranscriptionBtn =
+    document.getElementById("copyTranscriptionBtn");
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+const toast =
+    document.getElementById("toast");
+
+
+/* =========================================================
+   RECORDING STATE
+========================================================= */
+
+let currentTopic = "";
+
+let currentMode = "free";
+
+let mediaRecorder = null;
+
+let mediaStream = null;
+
+let audioChunks = [];
+
+let recordedBlob = null;
+
+let recordingStartedAt = 0;
+
+let recordingSeconds = 0;
+
+let recordingTimer = null;
+
+let countdownTimer = null;
+
+let countdownActive = false;
+
+let paused = false;
+
+
+/* =========================================================
+   TOPIC GENERATOR
+========================================================= */
+
+generateTopicBtn.addEventListener(
+    "click",
+    generateTopic
+);
+
+
+function generateTopic(){
+
+    if(isBusy()){
+
+        showToast(
+            "Finish the current recording first."
+        );
+
+        return;
+    }
+
+
+    let topic = "";
+
+
+    do{
+
+        const index =
+            Math.floor(
+                Math.random() * TOPICS.length
+            );
+
+        topic =
+            TOPICS[index];
+
+    }while(
+        TOPICS.length > 1 &&
+        topic === currentTopic
+    );
+
+
+    currentTopic =
+        topic;
+
+
+    topicText.textContent =
+        currentTopic;
+
+
+    /*
+     * Save generated topic to localStorage.
+     */
+    const topicRecord = {
+
+        id:createId(),
+
+        text:currentTopic,
+
+        createdAt:
+            new Date().toISOString()
+    };
+
+
+    const saved =
+        appendSpeakingData(
+            "topics",
+            topicRecord
+        );
+
+
+    if(!saved){
+
+        console.warn(
+            "Topic could not be saved."
+        );
+    }
+
+
+    statusText.textContent =
+        "Ready to record.";
+
+
+    showToast(
+        "New topic generated."
+    );
+}
+
+
+/* =========================================================
+   MODE SELECTION
+========================================================= */
+
+freeMode.addEventListener(
+    "click",
+    function(){
+
+        if(isBusy()){
+            return;
+        }
+
+
+        currentMode =
+            "free";
+
+
+        freeMode.classList.add(
+            "active"
+        );
+
+        challengeMode.classList.remove(
+            "active"
+        );
+
+
+        modeDisplay.textContent =
+            "Free Talk";
+
+
+        resetReadyState();
+    }
+);
+
+
+challengeMode.addEventListener(
+    "click",
+    function(){
+
+        if(isBusy()){
+            return;
+        }
+
+
+        currentMode =
+            "challenge";
+
+
+        challengeMode.classList.add(
+            "active"
+        );
+
+        freeMode.classList.remove(
+            "active"
+        );
+
+
+        modeDisplay.textContent =
+            "60 Sec Challenge";
+
+
+        resetReadyState();
+    }
+);
+
+
+/* =========================================================
+   BUSY CHECK
+========================================================= */
+
+function isBusy(){
+
+    if(countdownActive){
+        return true;
+    }
+
+
+    if(!mediaRecorder){
+        return false;
+    }
+
+
+    return (
+        mediaRecorder.state === "recording" ||
+        mediaRecorder.state === "paused"
+    );
+}
+
+
+/* =========================================================
+   TIME FORMAT
+========================================================= */
+
+function formatTime(seconds){
+
+    seconds =
+        Math.max(
+            0,
+            Math.floor(seconds)
+        );
+
+
+    const minutes =
+        Math.floor(
+            seconds / 60
+        );
+
+
+    const remainingSeconds =
+        seconds % 60;
+
+
+    return (
+        String(minutes).padStart(2,"0") +
+        ":" +
+        String(remainingSeconds).padStart(2,"0")
+    );
+}
+
+
+/* =========================================================
+   RESET READY STATE
+========================================================= */
+
+function resetReadyState(){
+
+    clearAllTimers();
+
+
+    countdownActive = false;
+
+    paused = false;
+
+    recordingSeconds = 0;
+
+
+    recorderCard.classList.remove(
+        "recording"
+    );
+
+
+    timer.textContent =
+        currentMode === "challenge"
+            ? "01:00"
+            : "00:00";
+
+
+    timerLabel.textContent =
+        currentMode === "challenge"
+            ? "60 seconds available"
+            : "Ready";
+
+
+    recordBtn.style.display =
+        "inline-block";
+
+    pauseBtn.style.display =
+        "none";
+
+    saveBtn.style.display =
+        "none";
+
+    cancelBtn.style.display =
+        "none";
+
+
+    pauseBtn.textContent =
+        "Pause";
+
+
+    if(currentTopic){
+
+        statusText.textContent =
+            "Ready to record.";
+
+    }else{
+
+        statusText.textContent =
+            "Generate a topic and press Record.";
+    }
+}
+
+
+/* =========================================================
+   RECORD BUTTON
+========================================================= */
+
+recordBtn.addEventListener(
+    "click",
+    async function(){
+
+        if(!currentTopic){
+
+            showToast(
+                "Generate a topic first."
+            );
+
+            return;
+        }
+
+
+        if(isBusy()){
+            return;
+        }
+
+
+        await startCountdown();
+    }
+);
+
+
+/* =========================================================
+   COUNTDOWN
+========================================================= */
+
+async function startCountdown(){
+
+    const seconds =
+        Number(
+            countdownSelect.value
+        );
+
+
+    countdownActive = true;
+
+
+    let remaining =
+        seconds;
+
+
+    recordBtn.style.display =
+        "none";
+
+
+    cancelBtn.style.display =
+        "inline-block";
+
+
+    timer.textContent =
+        formatTime(remaining);
+
+
+    timerLabel.textContent =
+        "Get ready";
+
+
+    statusText.textContent =
+        "Recording will start automatically.";
+
+
+    countdownTimer =
+        setInterval(
+            async function(){
+
+                remaining--;
+
+
+                timer.textContent =
+                    formatTime(remaining);
+
+
+                if(remaining <= 0){
+
+                    clearInterval(
+                        countdownTimer
+                    );
+
+                    countdownTimer = null;
+
+                    countdownActive = false;
+
+
+                    await beginRecording();
+                }
+
+            },
+            1000
+        );
+}
+
+
+/* =========================================================
+   BEGIN RECORDING
+========================================================= */
+
+async function beginRecording(){
+
+    if(
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia
+    ){
+
+        showToast(
+            "This browser does not support microphone recording."
+        );
+
+
+        resetReadyState();
+
+        return;
+    }
+
+
+    try{
+
+        mediaStream =
+            await navigator.mediaDevices.getUserMedia({
+
+                audio:{
+                    echoCancellation:true,
+                    noiseSuppression:true,
+                    autoGainControl:true
+                }
+
+            });
+
+
+        const mimeType =
+            getSupportedMimeType();
+
+
+        if(mimeType){
+
+            mediaRecorder =
+                new MediaRecorder(
+                    mediaStream,
+                    {
+                        mimeType:mimeType
+                    }
+                );
+
+        }else{
+
+            mediaRecorder =
+                new MediaRecorder(
+                    mediaStream
+                );
+        }
+
+
+        audioChunks = [];
+
+        recordedBlob = null;
+
+
+        mediaRecorder.addEventListener(
+            "dataavailable",
+            function(event){
+
+                if(
+                    event.data &&
+                    event.data.size > 0
+                ){
+
+                    audioChunks.push(
+                        event.data
+                    );
+                }
+            }
+        );
+
+
+        mediaRecorder.addEventListener(
+            "error",
+            function(event){
+
+                console.error(
+                    "MediaRecorder error:",
+                    event
+                );
+
+
+                showToast(
+                    "Recording error."
+                );
+
+
+                cleanupRecording();
+            }
+        );
+
+
+        mediaRecorder.addEventListener(
+            "stop",
+            function(){
+
+                createRecordedBlob();
+            }
+        );
+
+
+        mediaRecorder.start(1000);
+
+
+        recordingStartedAt =
+            Date.now();
+
+
+        recordingSeconds = 0;
+
+        paused = false;
+
+
+        recorderCard.classList.add(
+            "recording"
+        );
+
+
+        recordBtn.style.display =
+            "none";
+
+
+        cancelBtn.style.display =
+            "inline-block";
+
+
+        saveBtn.style.display =
+            "inline-block";
+
+
+        if(currentMode === "free"){
+
+            pauseBtn.style.display =
+                "inline-block";
+
+        }else{
+
+            pauseBtn.style.display =
+                "none";
+        }
+
+
+        timerLabel.textContent =
+            currentMode === "challenge"
+                ? "Time remaining"
+                : "Recording time";
+
+
+        statusText.textContent =
+            "Recording...";
+
+
+        startRecordingTimer();
+
+
+    }catch(error){
+
+        console.error(
+            "Microphone error:",
+            error
+        );
+
+
+        showToast(
+            "Microphone permission was not granted."
+        );
+
+
+        resetReadyState();
+    }
+}
+
+
+/* =========================================================
+   MIME TYPE
+========================================================= */
+
+function getSupportedMimeType(){
+
+    if(
+        typeof MediaRecorder === "undefined"
+    ){
+
+        return "";
+    }
+
+
+    const types = [
+
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/ogg;codecs=opus",
+        "audio/mp4"
+
+    ];
+
+
+    for(
+        let i = 0;
+        i < types.length;
+        i++
+    ){
+
+        if(
+            MediaRecorder.isTypeSupported &&
+            MediaRecorder.isTypeSupported(
+                types[i]
+            )
+        ){
+
+            return types[i];
+        }
+    }
+
+
+    return "";
+}
+
+
+/* =========================================================
+   RECORDING TIMER
+========================================================= */
+
+function startRecordingTimer(){
+
+    clearInterval(
+        recordingTimer
+    );
+
+
+    recordingTimer =
+        setInterval(
+            function(){
+
+                if(paused){
+                    return;
+                }
+
+
+                recordingSeconds =
+                    Math.floor(
+                        (
+                            Date.now() -
+                            recordingStartedAt
+                        ) / 1000
+                    );
+
+
+                if(
+                    currentMode ===
+                    "challenge"
+                ){
+
+                    const remaining =
+                        Math.max(
+                            0,
+                            60 -
+                            recordingSeconds
+                        );
+
+
+                    timer.textContent =
+                        formatTime(
+                            remaining
+                        );
+
+
+                    if(
+                        remaining <= 0
+                    ){
+
+                        clearInterval(
+                            recordingTimer
+                        );
+
+                        recordingTimer =
+                            null;
+
+
+                        statusText.textContent =
+                            "60 seconds complete. Saving...";
+
+
+                        stopRecording();
+                    }
+
+                }else{
+
+                    timer.textContent =
+                        formatTime(
+                            recordingSeconds
+                        );
+                }
+
+            },
+            250
+        );
+}
+
+
+/* =========================================================
+   PAUSE / RESUME
+========================================================= */
+
+pauseBtn.addEventListener(
+    "click",
+    function(){
+
+        if(!mediaRecorder){
+            return;
+        }
+
+
+        if(
+            mediaRecorder.state ===
+            "recording"
+        ){
+
+            try{
+
+                mediaRecorder.pause();
+
+
+                paused = true;
+
+
+                pauseBtn.textContent =
+                    "Resume";
+
+
+                statusText.textContent =
+                    "Recording paused.";
+
+
+                timerLabel.textContent =
+                    "Paused";
+
+            }catch(error){
+
+                console.error(error);
+            }
+
+
+            return;
+        }
+
+
+        if(
+            mediaRecorder.state ===
+            "paused"
+        ){
+
+            try{
+
+                mediaRecorder.resume();
+
+
+                paused = false;
+
+
+                pauseBtn.textContent =
+                    "Pause";
+
+
+                statusText.textContent =
+                    "Recording...";
+
+
+                timerLabel.textContent =
+                    "Recording time";
+
+            }catch(error){
+
+                console.error(error);
+            }
+        }
+    }
+);
+
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+saveBtn.addEventListener(
+    "click",
+    function(){
+
+        if(!mediaRecorder){
+            return;
+        }
+
+
+        if(
+            mediaRecorder.state ===
+            "inactive"
+        ){
+
+            return;
+        }
+
+
+        statusText.textContent =
+            "Saving recording...";
+
+
+        stopRecording();
+    }
+);
+
+
+/* =========================================================
+   STOP RECORDING
+========================================================= */
+
+function stopRecording(){
+
+    clearInterval(
+        recordingTimer
+    );
+
+    recordingTimer = null;
+
+
+    if(
+        mediaRecorder &&
+        mediaRecorder.state !==
+        "inactive"
+    ){
+
+        try{
+
+            mediaRecorder.stop();
+
+        }catch(error){
+
+            console.error(error);
+        }
+
+    }else{
+
+        createRecordedBlob();
+    }
+}
+
+
+/* =========================================================
+   CREATE BLOB
+========================================================= */
+
+function createRecordedBlob(){
+
+    if(audioChunks.length === 0){
+
+        showToast(
+            "No audio was recorded."
+        );
+
+
+        cleanupRecording();
+
+        return;
+    }
+
+
+    const type =
+        mediaRecorder &&
+        mediaRecorder.mimeType
+            ? mediaRecorder.mimeType
+            : "audio/webm";
+
+
+    recordedBlob =
+        new Blob(
+            audioChunks,
+            {
+                type:type
+            }
+        );
+
+
+    finishRecording();
+}
+
+
+/* =========================================================
+   FINISH RECORDING
+========================================================= */
+
+async function finishRecording(){
+
+    clearInterval(
+        recordingTimer
+    );
+
+    recordingTimer = null;
+
+
+    stopMediaTracks();
+
+
+    recorderCard.classList.remove(
+        "recording"
+    );
+
+
+    recordBtn.style.display =
+        "none";
+
+    pauseBtn.style.display =
+        "none";
+
+    saveBtn.style.display =
+        "none";
+
+    cancelBtn.style.display =
+        "none";
+
+
+    statusText.textContent =
+        "Recording saved.";
+
+
+    const filename =
+        createFilename(
+            getAudioExtension()
+        );
+
+
+    /*
+     * Convert the audio Blob into a persistent
+     * Base64 data URL.
+     */
+    let audioData = null;
+
+
+    try{
+
+        audioData =
+            await blobToDataURL(
+                recordedBlob
+            );
+
+    }catch(error){
+
+        console.error(
+            "Audio conversion error:",
+            error
+        );
+
+
+        showToast(
+            "Audio could not be prepared for saving."
+        );
+
+
+        mediaRecorder = null;
+        audioChunks = [];
+        recordedBlob = null;
+
+        return;
+    }
+
+
+    const record = {
+
+        id:createId(),
+
+        filename:filename,
+
+        topic:currentTopic,
+
+        mode:currentMode,
+
+        createdAt:
+            new Date().toISOString(),
+
+        duration:
+            recordingSeconds,
+
+        mimeType:
+            recordedBlob &&
+            recordedBlob.type
+                ? recordedBlob.type
+                : "audio/webm",
+
+        audioData:
+            audioData
+    };
+
+
+    /*
+     * Save recording to unified localStorage.
+     */
+    const saved =
+        appendSpeakingData(
+            "recordings",
+            record
+        );
+
+
+    if(!saved){
+
+        /*
+         * localStorage quota or storage failure.
+         */
+        showToast(
+            "Recording is too large for local storage."
+        );
+
+        statusText.textContent =
+            "Recording could not be saved.";
+
+    }else{
+
+        showToast(
+            "Recording saved successfully."
+        );
+
+
+        await renderArchive();
+    }
+
+
+    mediaRecorder = null;
+
+    audioChunks = [];
+
+    recordedBlob = null;
+}
+
+
+/* =========================================================
+   CANCEL
+========================================================= */
+
+cancelBtn.addEventListener(
+    "click",
+    function(){
+
+        clearAllTimers();
+
+
+        if(
+            mediaRecorder &&
+            mediaRecorder.state !==
+            "inactive"
+        ){
+
+            try{
+
+                mediaRecorder.stop();
+
+            }catch(error){}
+        }
+
+
+        stopMediaTracks();
+
+
+        mediaRecorder = null;
+
+        audioChunks = [];
+
+        recordedBlob = null;
+
+
+        countdownActive = false;
+
+        paused = false;
+
+
+        resetReadyState();
+
+
+        showToast(
+            "Recording cancelled."
+        );
+    }
+);
+
+
+/* =========================================================
+   CLEANUP
+========================================================= */
+
+function cleanupRecording(){
+
+    clearAllTimers();
+
+
+    stopMediaTracks();
+
+
+    mediaRecorder = null;
+
+    audioChunks = [];
+
+    recordedBlob = null;
+
+
+    countdownActive = false;
+
+    paused = false;
+
+
+    resetReadyState();
+}
+
+
+/* =========================================================
+   CLEAR TIMERS
+========================================================= */
+
+function clearAllTimers(){
+
+    if(
+        recordingTimer !== null
+    ){
+
+        clearInterval(
+            recordingTimer
+        );
+
+        recordingTimer = null;
+    }
+
+
+    if(
+        countdownTimer !== null
+    ){
+
+        clearInterval(
+            countdownTimer
+        );
+
+        countdownTimer = null;
+    }
+}
+
+
+/* =========================================================
+   STOP MEDIA TRACKS
+========================================================= */
+
+function stopMediaTracks(){
+
+    if(!mediaStream){
+        return;
+    }
+
+
+    const tracks =
+        mediaStream.getTracks();
+
+
+    tracks.forEach(
+        function(track){
+
+            track.stop();
+        }
+    );
+
+
+    mediaStream = null;
+}
+
+
+/* =========================================================
+   FILE NAME
+========================================================= */
+
+function createFilename(
+    extension
+){
+
+    const now =
+        new Date();
+
+
+    const day =
+        String(
+            now.getDate()
+        ).padStart(2,"0");
+
+
+    const months = [
+
+        "jan",
+        "feb",
+        "mar",
+        "apr",
+        "may",
+        "jun",
+        "jul",
+        "aug",
+        "sep",
+        "oct",
+        "nov",
+        "dec"
+
+    ];
+
+
+    const month =
+        months[
+            now.getMonth()
+        ];
+
+
+    const year =
+        String(
+            now.getFullYear()
+        ).slice(-2);
+
+
+    const hour =
+        String(
+            now.getHours()
+        ).padStart(2,"0");
+
+
+    const days = [
+
+        "Su",
+        "M",
+        "Tu",
+        "W",
+        "Th",
+        "F",
+        "Sa"
+
+    ];
+
+
+    const dayOfWeek =
+        days[
+            now.getDay()
+        ];
+
+
+    return (
+
+        day +
+        "_" +
+        month +
+        "_" +
+        year +
+        "_" +
+        hour +
+        "_" +
+        dayOfWeek +
+        "." +
+        extension
+
+    );
+}
+
+
+/* =========================================================
+   AUDIO EXTENSION
+========================================================= */
+
+function getAudioExtension(){
+
+    if(
+        recordedBlob &&
+        recordedBlob.type
+    ){
+
+        const type =
+            recordedBlob.type.toLowerCase();
+
+
+        if(
+            type.indexOf("ogg") !== -1
+        ){
+
+            return "ogg";
+        }
+
+
+        if(
+            type.indexOf("mp4") !== -1
+        ){
+
+            return "mp4";
+        }
+
+
+        if(
+            type.indexOf("wav") !== -1
+        ){
+
+            return "wav";
+        }
+
+
+        if(
+            type.indexOf("mpeg") !== -1
+        ){
+
+            return "mp3";
+        }
+    }
+
+
+    return "webm";
+}
+
+
+/* =========================================================
+   UNIQUE ID
+========================================================= */
+
+function createId(){
+
+    if(
+        window.crypto &&
+        typeof window.crypto.randomUUID ===
+        "function"
+    ){
+
+        return window.crypto.randomUUID();
+    }
+
+
+    return (
+
+        Date.now().toString(36) +
+        "_" +
+        Math.random()
+            .toString(36)
+            .slice(2)
+
+    );
+}
+
+
+/* =========================================================
+   GET RECORDINGS FROM LOCAL STORAGE
+========================================================= */
+
+async function getAllRecordings(){
+
+    const data =
+        getSpeakingData();
+
+
+    const records =
+        Array.isArray(data.recordings)
+            ? data.recordings
+            : [];
+
+
+    records.sort(
+        function(a,b){
+
+            return (
+
+                new Date(
+                    b.createdAt
+                ) -
+
+                new Date(
+                    a.createdAt
+                )
+
+            );
+        }
+    );
+
+
+    return records;
+}
+
+
+/* =========================================================
+   DELETE RECORDING
+========================================================= */
+
+async function deleteRecording(
+    id
+){
+
+    const data =
+        getSpeakingData();
+
+
+    const originalLength =
+        data.recordings.length;
+
+
+    data.recordings =
+        data.recordings.filter(
+            function(record){
+
+                return record.id !== id;
+            }
+        );
+
+
+    if(
+        data.recordings.length ===
+        originalLength
+    ){
+
+        return false;
+    }
+
+
+    return saveSpeakingData(
+        data
+    );
+}
+
+
+/* =========================================================
+   RENDER ARCHIVE
+========================================================= */
+
+async function renderArchive(){
+
+    try{
+
+        const records =
+            await getAllRecordings();
+
+
+        const free =
+            records.filter(
+                function(record){
+
+                    return (
+                        record.mode ===
+                        "free"
+                    );
+                }
+            );
+
+
+        const challenge =
+            records.filter(
+                function(record){
+
+                    return (
+                        record.mode ===
+                        "challenge"
+                    );
+                }
+            );
+
+
+        freeCount.textContent =
+            String(
+                free.length
+            );
+
+
+        challengeCount.textContent =
+            String(
+                challenge.length
+            );
+
+
+        renderRecordList(
+            freeRecordings,
+            free
+        );
+
+
+        renderRecordList(
+            challengeRecordings,
+            challenge
+        );
+
+
+    }catch(error){
+
+        console.error(
+            "Archive error:",
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   RENDER RECORD LIST
+========================================================= */
+
+function renderRecordList(
+    container,
+    records
+){
+
+    container.innerHTML = "";
+
+
+    if(records.length === 0){
+
+        const empty =
+            document.createElement(
+                "div"
+            );
+
+
+        empty.className =
+            "empty";
+
+
+        empty.textContent =
+            "No recordings saved yet.";
+
+
+        container.appendChild(
+            empty
+        );
+
+
+        return;
+    }
+
+
+    records.forEach(
+        function(record){
+
+            const item =
+                document.createElement(
+                    "article"
+                );
+
+
+            item.className =
+                "record-item";
+
+
+            const top =
+                document.createElement(
+                    "div"
+                );
+
+
+            top.className =
+                "record-top";
+
+
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+
+            const filename =
+                document.createElement(
+                    "div"
+                );
+
+
+            filename.className =
+                "filename";
+
+
+            filename.textContent =
+                record.filename;
+
+
+            const timestamp =
+                document.createElement(
+                    "div"
+                );
+
+
+            timestamp.className =
+                "timestamp";
+
+
+            timestamp.textContent =
+                formatDate(
+                    record.createdAt
+                );
+
+
+            info.appendChild(
+                filename
+            );
+
+
+            info.appendChild(
+                timestamp
+            );
+
+
+            const actions =
+                document.createElement(
+                    "div"
+                );
+
+
+            actions.className =
+                "record-actions";
+
+
+            const deleteButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            deleteButton.type =
+                "button";
+
+
+            deleteButton.className =
+                "btn btn-danger btn-small";
+
+
+            deleteButton.textContent =
+                "Delete";
+
+
+            deleteButton.addEventListener(
+                "click",
+                async function(){
+
+                    const confirmed =
+                        window.confirm(
+                            "Delete this recording?"
+                        );
+
+
+                    if(!confirmed){
+                        return;
+                    }
+
+
+                    try{
+
+                        const deleted =
+                            await deleteRecording(
+                                record.id
+                            );
+
+
+                        if(deleted){
+
+                            await renderArchive();
+
+
+                            showToast(
+                                "Recording deleted."
+                            );
+
+                        }else{
+
+                            showToast(
+                                "Recording was not found."
+                            );
+                        }
+
+
+                    }catch(error){
+
+                        console.error(
+                            error
+                        );
+
+
+                        showToast(
+                            "Could not delete recording."
+                        );
+                    }
+                }
+            );
+
+
+            actions.appendChild(
+                deleteButton
+            );
+
+
+            top.appendChild(
+                info
+            );
+
+
+            top.appendChild(
+                actions
+            );
+
+
+            const topic =
+                document.createElement(
+                    "div"
+                );
+
+
+            topic.className =
+                "topic-meta";
+
+
+            topic.textContent =
+                "Topic: " +
+                record.topic;
+
+
+            const audio =
+                document.createElement(
+                    "audio"
+                );
+
+
+            audio.className =
+                "audio-player";
+
+
+            audio.controls =
+                true;
+
+
+            audio.preload =
+                "metadata";
+
+
+            let objectURL =
+                null;
+
+
+            /*
+             * Reconstruct the audio Blob from
+             * localStorage data.
+             */
+            if(record.audioData){
+
+                try{
+
+                    const blob =
+                        dataURLToBlob(
+                            record.audioData
+                        );
+
+
+                    if(blob){
+
+                        objectURL =
+                            URL.createObjectURL(
+                                blob
+                            );
+
+
+                        audio.src =
+                            objectURL;
+                    }
+
+                }catch(error){
+
+                    console.error(
+                        "Audio URL error:",
+                        error
+                    );
+                }
+            }
+
+
+            item.appendChild(
+                top
+            );
+
+
+            item.appendChild(
+                topic
+            );
+
+
+            item.appendChild(
+                audio
+            );
+
+
+            container.appendChild(
+                item
+            );
+        }
+    );
+}
+
+
+/* =========================================================
+   FORMAT DATE
+========================================================= */
+
+function formatDate(
+    value
+){
+
+    const date =
+        new Date(value);
+
+
+    if(
+        Number.isNaN(
+            date.getTime()
+        )
+    ){
+
+        return "Unknown date";
+    }
+
+
+    return date.toLocaleString(
+        undefined,
+        {
+            day:"2-digit",
+            month:"short",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+}
+
+
+/* =========================================================
+   TRANSCRIPTION
+========================================================= */
+
+let speechRecognition = null;
+
+let speechRecognitionSupported =
+    false;
+
+let transcriptionRunning =
+    false;
+
+let finalTranscript =
+    "";
+
+
+/* =========================================================
+   SETUP SPEECH RECOGNITION
+========================================================= */
+
+function setupSpeechRecognition(){
+
+    const Recognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+
+    if(!Recognition){
+
+        speechRecognitionSupported =
+            false;
+
+
+        transcriberStatusText.textContent =
+            "Speech transcription is not supported in this browser.";
+
+
+        startTranscriptionBtn.disabled =
+            true;
+
+
+        return;
+    }
+
+
+    speechRecognitionSupported =
+        true;
+
+
+    speechRecognition =
+        new Recognition();
+
+
+    speechRecognition.lang =
+        "en-US";
+
+
+    speechRecognition.continuous =
+        false;
+
+
+    speechRecognition.interimResults =
+        true;
+
+
+    speechRecognition.maxAlternatives =
+        1;
+
+
+    speechRecognition.onstart =
+        function(){
+
+            transcriptionRunning =
+                true;
+
+
+            transcriber.classList.add(
+                "listening"
+            );
+
+
+            transcriberStatusText.textContent =
+                "Listening...";
+
+
+            startTranscriptionBtn.disabled =
+                true;
+
+
+            stopTranscriptionBtn.disabled =
+                false;
+        };
+
+
+    speechRecognition.onresult =
+        function(event){
+
+            let interimText =
+                "";
+
+
+            for(
+                let i =
+                    event.resultIndex;
+
+                i <
+                    event.results.length;
+
+                i++
+            ){
+
+                const result =
+                    event.results[i];
+
+
+                const text =
+                    result[0].transcript;
+
+
+                if(result.isFinal){
+
+                    finalTranscript =
+                        (
+                            finalTranscript +
+                            " " +
+                            text
+                        )
+                        .replace(
+                            /\s+/g,
+                            " "
+                        )
+                        .trim();
+
+                }else{
+
+                    interimText +=
+                        text;
+                }
+            }
+
+
+            const displayText =
+                (
+                    finalTranscript +
+                    (
+                        interimText
+                            ? " " +
+                              interimText
+                            : ""
+                    )
+                )
+                .replace(
+                    /\s+/g,
+                    " "
+                )
+                .trim();
+
+
+            if(displayText){
+
+                transcriptBox.textContent =
+                    displayText;
+            }
+
+
+            transcriberStatusText.textContent =
+                "Transcribing...";
+        };
+
+
+    speechRecognition.onerror =
+        function(event){
+
+            console.warn(
+                "Speech recognition error:",
+                event.error
+            );
+
+
+            transcriptionRunning =
+                false;
+
+
+            transcriber.classList.remove(
+                "listening"
+            );
+
+
+            startTranscriptionBtn.disabled =
+                false;
+
+
+            stopTranscriptionBtn.disabled =
+                true;
+
+
+            if(
+                event.error ===
+                "not-allowed"
+            ){
+
+                transcriberStatusText.textContent =
+                    "Microphone permission denied.";
+
+                showToast(
+                    "Allow microphone access for transcription."
+                );
+
+
+                return;
+            }
+
+
+            if(
+                event.error ===
+                "service-not-allowed"
+            ){
+
+                transcriberStatusText.textContent =
+                    "Speech service is unavailable.";
+
+                return;
+            }
+
+
+            if(
+                event.error ===
+                "no-speech"
+            ){
+
+                transcriberStatusText.textContent =
+                    "No speech detected.";
+
+                return;
+            }
+
+
+            if(
+                event.error ===
+                "audio-capture"
+            ){
+
+                transcriberStatusText.textContent =
+                    "Microphone could not be accessed.";
+
+                return;
+            }
+
+
+            transcriberStatusText.textContent =
+                "Transcription error.";
+        };
+
+
+    speechRecognition.onend =
+        function(){
+
+            transcriptionRunning =
+                false;
+
+
+            transcriber.classList.remove(
+                "listening"
+            );
+
+
+            startTranscriptionBtn.disabled =
+                false;
+
+
+            stopTranscriptionBtn.disabled =
+                true;
+
+
+            transcriberStatusText.textContent =
+                "Ready";
+
+
+            /*
+             * Save completed transcript.
+             *
+             * Empty transcripts are ignored.
+             */
+            if(finalTranscript.trim()){
+
+                saveTranscript(
+                    finalTranscript.trim()
+                );
+            }
+        };
+}
+
+
+/* =========================================================
+   SAVE TRANSCRIPT
+========================================================= */
+
+function saveTranscript(
+    text
+){
+
+    if(!text){
+        return false;
+    }
+
+
+    /*
+     * Prevent duplicate save of exactly
+     * the same transcript immediately.
+     */
+    const data =
+        getSpeakingData();
+
+
+    const lastTranscript =
+        data.transcripts.length > 0
+            ? data.transcripts[
+                data.transcripts.length - 1
+              ]
+            : null;
+
+
+    if(
+        lastTranscript &&
+        lastTranscript.text === text
+    ){
+
+        return true;
+    }
+
+
+    const transcriptRecord = {
+
+        id:createId(),
+
+        text:text,
+
+        createdAt:
+            new Date().toISOString()
+    };
+
+
+    const saved =
+        appendSpeakingData(
+            "transcripts",
+            transcriptRecord
+        );
+
+
+    if(!saved){
+
+        console.warn(
+            "Transcript could not be saved."
+        );
+    }
+
+
+    return saved;
+}
+
+
+/* =========================================================
+   START TRANSCRIPTION
+========================================================= */
+
+startTranscriptionBtn.addEventListener(
+    "click",
+    function(){
+
+        if(!speechRecognitionSupported){
+
+            showToast(
+                "Speech recognition is not supported."
+            );
+
+            return;
+        }
+
+
+        if(transcriptionRunning){
+            return;
+        }
+
+
+        try{
+
+            speechRecognition.start();
+
+
+        }catch(error){
+
+            console.error(
+                "Speech recognition start error:",
+                error
+            );
+
+
+            transcriberStatusText.textContent =
+                "Could not start transcription.";
+        }
+    }
+);
+
+
+/* =========================================================
+   STOP TRANSCRIPTION
+========================================================= */
+
+stopTranscriptionBtn.addEventListener(
+    "click",
+    function(){
+
+        if(
+            !speechRecognition ||
+            !transcriptionRunning
+        ){
+
+            return;
+        }
+
+
+        try{
+
+            speechRecognition.stop();
+
+        }catch(error){
+
+            console.error(
+                error
+            );
+        }
+    }
+);
+
+
+/* =========================================================
+   CLEAR TRANSCRIPTION
+========================================================= */
+
+clearTranscriptionBtn.addEventListener(
+    "click",
+    function(){
+
+        if(transcriptionRunning){
+
+            try{
+
+                speechRecognition.stop();
+
+            }catch(error){}
+        }
+
+
+        finalTranscript =
+            "";
+
+
+        transcriptBox.innerHTML =
+            '<span class="transcript-placeholder">' +
+            'Your spoken words will appear here...' +
+            '</span>';
+
+
+        transcriberStatusText.textContent =
+            "Ready";
+
+
+        showToast(
+            "Text cleared."
+        );
+    }
+);
+
+
+/* =========================================================
+   COPY TRANSCRIPTION
+========================================================= */
+
+copyTranscriptionBtn.addEventListener(
+    "click",
+    async function(){
+
+        const text =
+            finalTranscript.trim();
+
+
+        if(!text){
+
+            showToast(
+                "There is no text to copy."
+            );
+
+            return;
+        }
+
+
+        try{
+
+            if(
+                navigator.clipboard &&
+                navigator.clipboard.writeText
+            ){
+
+                await navigator.clipboard.writeText(
+                    text
+                );
+
+
+                showToast(
+                    "Text copied."
+                );
+
+
+                return;
+            }
+
+        }catch(error){
+
+            console.warn(
+                "Clipboard API failed:",
+                error
+            );
+        }
+
+
+        const textarea =
+            document.createElement(
+                "textarea"
+            );
+
+
+        textarea.value =
+            text;
+
+
+        textarea.style.position =
+            "fixed";
+
+
+        textarea.style.left =
+            "-9999px";
+
+
+        document.body.appendChild(
+            textarea
+        );
+
+
+        textarea.focus();
+
+        textarea.select();
+
+
+        try{
+
+            document.execCommand(
+                "copy"
+            );
+
+
+            showToast(
+                "Text copied."
+            );
+
+        }catch(error){
+
+            showToast(
+                "Copy failed."
+            );
+        }
+
+
+        textarea.remove();
+    }
+);
+
+
+/* =========================================================
+   TAB NAVIGATION
+========================================================= */
+
+function showView(
+    activeTab,
+    activeView
+){
+
+    practiceTab.classList.remove(
+        "active"
+    );
+
+    recordingsTab.classList.remove(
+        "active"
+    );
+
+    transcriptionTab.classList.remove(
+        "active"
+    );
+
+
+    practiceView.classList.remove(
+        "active"
+    );
+
+    recordingsView.classList.remove(
+        "active"
+    );
+
+    transcriptionView.classList.remove(
+        "active"
+    );
+
+
+    activeTab.classList.add(
+        "active"
+    );
+
+
+    activeView.classList.add(
+        "active"
+    );
+}
+
+
+/* =========================================================
+   PRACTICE TAB
+========================================================= */
+
+practiceTab.addEventListener(
+    "click",
+    function(){
+
+        showView(
+            practiceTab,
+            practiceView
+        );
+    }
+);
+
+
+/* =========================================================
+   RECORDINGS TAB
+========================================================= */
+
+recordingsTab.addEventListener(
+    "click",
+    async function(){
+
+        showView(
+            recordingsTab,
+            recordingsView
+        );
+
+
+        await renderArchive();
+    }
+);
+
+
+/* =========================================================
+   TRANSCRIPTION TAB
+========================================================= */
+
+transcriptionTab.addEventListener(
+    "click",
+    function(){
+
+        showView(
+            transcriptionTab,
+            transcriptionView
+        );
+    }
+);
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+let toastTimeout =
+    null;
+
+
+function showToast(
+    message
+){
+
+    toast.textContent =
+        message;
+
+
+    toast.classList.add(
+        "show"
+    );
+
+
+    if(toastTimeout !== null){
+
+        clearTimeout(
+            toastTimeout
+        );
+    }
+
+
+    toastTimeout =
+        setTimeout(
+            function(){
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            2500
+        );
+}
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+setupSpeechRecognition();
+
+resetReadyState();
+
+renderArchive();
+
+
+/* =========================================================
+   PAGE EXIT CLEANUP
+========================================================= */
+
+window.addEventListener(
+    "beforeunload",
+    function(){
+
+        if(
+            speechRecognition &&
+            transcriptionRunning
+        ){
+
+            try{
+
+                speechRecognition.stop();
+
+            }catch(error){}
+        }
+
+
+        stopMediaTracks();
+
+        clearAllTimers();
+    }
+);
+
+</script>
+
+</body>
+</html>
