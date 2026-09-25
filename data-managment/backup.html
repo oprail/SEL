@@ -1,0 +1,3380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Backup</title>
+
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #172033;
+            --muted: #697386;
+            --border: #e4e8f0;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #16a34a;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --shadow: 0 8px 30px rgba(23, 32, 51, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .container {
+            width: min(1100px, calc(100% - 30px));
+            margin: 30px auto;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+
+        .home-btn {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            text-decoration: none;
+            background: #fff;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            font-size: 22px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .header p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .card-header p {
+            margin: 6px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        details summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 7px;
+            font-size: 14px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+            background: #fff;
+            color: var(--text);
+        }
+
+        input:focus {
+            border-color: var(--primary);
+        }
+
+        .help {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 10px;
+            padding: 11px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: #eef2f7;
+            color: var(--text);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .action-card {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .action-icon {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .action-card h3 {
+            margin: 0 0 6px;
+            font-size: 16px;
+        }
+
+        .action-card p {
+            margin: 0 0 15px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .status-box {
+            padding: 15px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .status-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .status-value {
+            font-size: 15px;
+            font-weight: 700;
+            word-break: break-word;
+        }
+
+        .terminal {
+            background: #10151f;
+            color: #dbe4f0;
+            border-radius: 12px;
+            padding: 15px;
+            min-height: 240px;
+            max-height: 430px;
+            overflow-y: auto;
+            font-family:
+                ui-monospace,
+                SFMono-Regular,
+                Menlo,
+                Monaco,
+                Consolas,
+                monospace;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .log-line {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .log-info {
+            color: #93c5fd;
+        }
+
+        .log-success {
+            color: #86efac;
+        }
+
+        .log-warning {
+            color: #fcd34d;
+        }
+
+        .log-error {
+            color: #fca5a5;
+        }
+
+        .guide {
+            line-height: 1.7;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .guide strong {
+            color: var(--text);
+        }
+
+        @media (max-width: 750px) {
+            .actions,
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                width: min(100% - 20px, 1100px);
+                margin: 20px auto;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .input-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <a href="../../index.html" class="home-btn" title="Home">🏠</a>
+
+        <div>
+            <h1>Backup</h1>
+            <p>Secure Telegram backup and restore for your English learning data.</p>
+        </div>
+    </div>
+
+
+    <!-- TELEGRAM SETTINGS -->
+    <div class="card">
+
+        <div class="card-header">
+            <h2>Telegram Settings</h2>
+            <p>Configure the Telegram bot used for your backups.</p>
+        </div>
+
+        <div class="card-body">
+
+            <details open>
+                <summary></summary>
+
+                <div style="margin-top:20px;">
+
+                    <div class="form-group">
+
+                        <label for="botToken">
+                            Telegram Bot Token
+                        </label>
+
+                        <div class="input-row">
+
+                            <input
+                                id="botToken"
+                                type="password"
+                                placeholder="123456789:AA..."
+                                autocomplete="off"
+                            >
+
+                            <button
+                                type="button"
+                                class="btn-secondary"
+                                id="toggleTokenBtn"
+                            >
+                                Show
+                            </button>
+
+                        </div>
+
+                        <div class="help">
+                            Token received from @BotFather.
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="chatId">
+                            Telegram Chat ID
+                        </label>
+
+                        <input
+                            id="chatId"
+                            type="text"
+                            placeholder="-1001234567890"
+                            autocomplete="off"
+                        >
+
+                        <div class="help">
+                            The Telegram chat where your backups will be stored.
+                        </div>
+
+                    </div>
+
+
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+
+                        <button
+                            type="button"
+                            class="btn-success"
+                            id="saveCredentialsBtn"
+                        >
+                            ✓ Save Credentials
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn-secondary"
+                            id="testConnectionBtn"
+                        >
+                            Test Connection
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </details>
+
+        </div>
+
+    </div>
+
+
+    <!-- BACKUP ACTIONS -->
+    <div class="card">
+
+        <div class="card-header">
+            <h2>Backup Actions</h2>
+            <p>Upload or restore your application state.</p>
+        </div>
+
+        <div class="card-body">
+
+            <div class="actions">
+
+                <div class="action-card">
+
+                    <div class="action-icon">↑</div>
+
+                    <h3>Upload Data</h3>
+
+                    <p>
+                        Uploads application data and recordings separately to Telegram.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="btn-primary"
+                        id="uploadBtn"
+                    >
+                        Upload
+                    </button>
+
+                </div>
+
+
+                <div class="action-card">
+
+                    <div class="action-icon">↓</div>
+
+                    <h3>Restore Data</h3>
+
+                    <p>
+                        Restores JSON/application data only.
+                        Telegram recordings remain in the cloud.
+                    </p>
+
+                    <button
+                        type="button"
+                        class="btn-secondary"
+                        id="restoreBtn"
+                    >
+                        Restore
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACTIVITY LOG -->
+    <div class="card">
+
+        <div class="card-header">
+
+            <h2>Activity Log</h2>
+
+            <p>
+                Live information about preparation, upload order, restore and errors.
+            </p>
+
+        </div>
+
+        <div class="card-body">
+
+            <div
+                id="activityLog"
+                class="terminal"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATUS -->
+    <div class="card">
+
+        <div class="card-header">
+            <h2>Status</h2>
+        </div>
+
+        <div class="card-body">
+
+            <div class="status-grid">
+
+                <div class="status-box">
+                    <div class="status-label">
+                        Status
+                    </div>
+
+                    <div
+                        id="statusValue"
+                        class="status-value"
+                    >
+                        Ready
+                    </div>
+                </div>
+
+
+                <div class="status-box">
+                    <div class="status-label">
+                        Last Action
+                    </div>
+
+                    <div
+                        id="lastActionValue"
+                        class="status-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+
+                <div class="status-box">
+                    <div class="status-label">
+                        Data Size
+                    </div>
+
+                    <div
+                        id="dataSizeValue"
+                        class="status-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+
+                <div class="status-box">
+                    <div class="status-label">
+                        Last Backup
+                    </div>
+
+                    <div
+                        id="lastBackupValue"
+                        class="status-value"
+                    >
+                        —
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- GUIDE -->
+    <div class="card">
+
+        <div class="card-header">
+            <h2>Quick Setup Guide</h2>
+        </div>
+
+        <div class="card-body guide">
+
+            <strong>1.</strong>
+            Create a Telegram bot using @BotFather.
+
+            <br>
+
+            <strong>2.</strong>
+            Enter the bot token and your Telegram chat ID.
+
+            <br>
+
+            <strong>3.</strong>
+            Save the credentials and test the connection.
+
+            <br>
+
+            <strong>4.</strong>
+            Click Upload Data to create a JSON backup and separately upload
+            Speaking recordings.
+
+            <br>
+
+            <strong>5.</strong>
+            Telegram credentials are never included in the JSON backup.
+
+            <br>
+
+            <strong>6.</strong>
+            Restore downloads the JSON backup. Audio recordings remain stored
+            separately in Telegram.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+"use strict";
+
+
+/* =========================================================
+   STORAGE KEYS
+========================================================= */
+
+const MODULE_STORAGE_KEYS = {
+    shadowing: "shadowing_data",
+    reading: "reading_data",
+    speaking: "speaking_data"
+};
+
+const TELEGRAM_KEYS = {
+    token: "tg_token",
+    chatId: "tg_chat_id",
+
+    legacyToken: "telegram_backup_bot_token",
+    legacyChatId: "telegram_backup_chat_id",
+
+    lastBackup: "telegram_backup_last_backup"
+};
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const botTokenInput =
+    document.getElementById("botToken");
+
+const chatIdInput =
+    document.getElementById("chatId");
+
+const toggleTokenBtn =
+    document.getElementById("toggleTokenBtn");
+
+const saveCredentialsBtn =
+    document.getElementById("saveCredentialsBtn");
+
+const testConnectionBtn =
+    document.getElementById("testConnectionBtn");
+
+const uploadBtn =
+    document.getElementById("uploadBtn");
+
+const restoreBtn =
+    document.getElementById("restoreBtn");
+
+const activityLog =
+    document.getElementById("activityLog");
+
+const statusValue =
+    document.getElementById("statusValue");
+
+const lastActionValue =
+    document.getElementById("lastActionValue");
+
+const dataSizeValue =
+    document.getElementById("dataSizeValue");
+
+const lastBackupValue =
+    document.getElementById("lastBackupValue");
+
+
+/* =========================================================
+   GENERAL HELPERS
+========================================================= */
+
+function getErrorMessage(error) {
+
+    if (!error) {
+        return "Unknown error";
+    }
+
+    if (error instanceof Error) {
+        return error.message;
+    }
+
+    return String(error);
+}
+
+
+function formatBytes(bytes) {
+
+    bytes = Number(bytes) || 0;
+
+    if (bytes < 1024) {
+        return bytes + " B";
+    }
+
+    if (bytes < 1024 * 1024) {
+        return (bytes / 1024).toFixed(1) + " KB";
+    }
+
+    if (bytes < 1024 * 1024 * 1024) {
+        return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+    }
+
+    return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+}
+
+
+function timestamp() {
+
+    return new Date().toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit"
+    });
+}
+
+
+/* =========================================================
+   LOGGING
+========================================================= */
+
+function addLog(message, type = "info") {
+
+    const line =
+        document.createElement("div");
+
+    line.className =
+        "log-line log-" + type;
+
+    const prefix =
+        "[" + timestamp() + "]";
+
+    const label =
+        type.toUpperCase();
+
+    line.textContent =
+        prefix + "[" + label + "]" + message;
+
+    activityLog.appendChild(line);
+
+    activityLog.scrollTop =
+        activityLog.scrollHeight;
+}
+
+
+function setStatus(status, action) {
+
+    statusValue.textContent =
+        status;
+
+    if (action !== undefined) {
+        lastActionValue.textContent =
+            action;
+    }
+}
+
+
+/* =========================================================
+   TELEGRAM CREDENTIALS
+========================================================= */
+
+function getCredentials() {
+
+    const token =
+        localStorage.getItem(
+            TELEGRAM_KEYS.token
+        ) ||
+        localStorage.getItem(
+            TELEGRAM_KEYS.legacyToken
+        );
+
+    const chatId =
+        localStorage.getItem(
+            TELEGRAM_KEYS.chatId
+        ) ||
+        localStorage.getItem(
+            TELEGRAM_KEYS.legacyChatId
+        );
+
+    return {
+        token: token ? token.trim() : "",
+        chatId: chatId ? chatId.trim() : ""
+    };
+}
+
+
+function loadCredentials() {
+
+    const credentials =
+        getCredentials();
+
+    botTokenInput.value =
+        credentials.token;
+
+    chatIdInput.value =
+        credentials.chatId;
+
+    if (credentials.token && credentials.chatId) {
+
+        addLog(
+            "Telegram credentials detected.",
+            "success"
+        );
+
+    } else {
+
+        addLog(
+            "Telegram credentials not configured.",
+            "warning"
+        );
+    }
+}
+
+
+function saveCredentials() {
+
+    const token =
+        botTokenInput.value.trim();
+
+    const chatId =
+        chatIdInput.value.trim();
+
+    if (!token) {
+
+        addLog(
+            "Telegram bot token is required.",
+            "error"
+        );
+
+        return false;
+    }
+
+    if (!chatId) {
+
+        addLog(
+            "Telegram chat ID is required.",
+            "error"
+        );
+
+        return false;
+    }
+
+    localStorage.setItem(
+        TELEGRAM_KEYS.token,
+        token
+    );
+
+    localStorage.setItem(
+        TELEGRAM_KEYS.chatId,
+        chatId
+    );
+
+    localStorage.setItem(
+        TELEGRAM_KEYS.legacyToken,
+        token
+    );
+
+    localStorage.setItem(
+        TELEGRAM_KEYS.legacyChatId,
+        chatId
+    );
+
+    addLog(
+        "Telegram credentials saved locally.",
+        "success"
+    );
+
+    return true;
+}
+
+
+/* =========================================================
+   TELEGRAM API
+========================================================= */
+
+async function telegramRequest(
+    token,
+    method,
+    options = {}
+) {
+
+    const url =
+        "https://api.telegram.org/bot" +
+        token +
+        "/" +
+        method;
+
+    const response =
+        await fetch(
+            url,
+            {
+                ...options,
+                cache: "no-store"
+            }
+        );
+
+    let data;
+
+    try {
+
+        data =
+            await response.json();
+
+    } catch {
+
+        throw new Error(
+            "Telegram returned an invalid response."
+        );
+    }
+
+    if (!response.ok || !data.ok) {
+
+        throw new Error(
+            data?.description ||
+            "Telegram API request failed."
+        );
+    }
+
+    return data;
+}
+
+
+async function testConnection() {
+
+    const credentials =
+        getCredentials();
+
+    if (
+        !credentials.token ||
+        !credentials.chatId
+    ) {
+
+        addLog(
+            "Please save Telegram credentials first.",
+            "warning"
+        );
+
+        return;
+    }
+
+    try {
+
+        setStatus(
+            "Testing...",
+            "Test Telegram connection"
+        );
+
+        addLog(
+            "Testing Telegram bot connection...",
+            "info"
+        );
+
+        const me =
+            await telegramRequest(
+                credentials.token,
+                "getMe"
+            );
+
+        addLog(
+            "Bot connected: @" +
+            (me.result?.username || "unknown"),
+            "success"
+        );
+
+        setStatus(
+            "Connected",
+            "Telegram connection successful"
+        );
+
+    } catch (error) {
+
+        addLog(
+            "Telegram connection failed: " +
+            getErrorMessage(error),
+            "error"
+        );
+
+        setStatus(
+            "Connection Failed",
+            "Telegram connection failed"
+        );
+    }
+}
+
+
+/* =========================================================
+   STORAGE HELPERS
+========================================================= */
+
+function readStorageItem(key) {
+
+    const raw =
+        localStorage.getItem(key);
+
+    if (raw === null) {
+        return null;
+    }
+
+    try {
+
+        return JSON.parse(raw);
+
+    } catch {
+
+        return raw;
+    }
+}
+
+
+function isSensitiveKey(key) {
+
+    return (
+        /token|password|secret|private.?key|authorization/i.test(key) ||
+        key === "tg_token" ||
+        key === "tg_chat_id" ||
+        key === "telegram_backup_bot_token" ||
+        key === "telegram_backup_chat_id"
+    );
+}
+
+
+function isTemporaryKey(key) {
+
+    return (
+        /^eruda-/i.test(key) ||
+        /temporary|temp|session|cache/i.test(key)
+    );
+}
+
+
+/* =========================================================
+   RELEVANT STORAGE SCANNER
+========================================================= */
+
+function scanRelevantStorage() {
+
+    const data = {};
+
+    const knownKeys = [
+        "shadowEnglishSearchedWords",
+        "shadowEnglishWikiFontSize",
+        "shadowEnglishWikiTheme",
+        "shadowEnglishWikiLanguage",
+
+        MODULE_STORAGE_KEYS.shadowing,
+        MODULE_STORAGE_KEYS.reading,
+        MODULE_STORAGE_KEYS.speaking
+    ];
+
+    const genericPattern =
+        /data|history|saved|favorite|bookmark|word|words|link|links|topic|topics|transcript|recording|reading|speaking|shadowing/i;
+
+    const allKeys = [];
+
+    for (
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ) {
+
+        const key =
+            localStorage.key(i);
+
+        if (key) {
+            allKeys.push(key);
+        }
+    }
+
+    for (const key of allKeys) {
+
+        if (isSensitiveKey(key)) {
+            continue;
+        }
+
+        if (isTemporaryKey(key)) {
+            continue;
+        }
+
+        const shouldInclude =
+            knownKeys.includes(key) ||
+            genericPattern.test(key);
+
+        if (!shouldInclude) {
+            continue;
+        }
+
+        const value =
+            readStorageItem(key);
+
+        if (value !== null) {
+            data[key] = value;
+        }
+    }
+
+    return data;
+}
+
+
+/* =========================================================
+   SPEAKING DATA
+========================================================= */
+
+function getSpeakingData() {
+
+    try {
+
+        const raw =
+            localStorage.getItem(
+                MODULE_STORAGE_KEYS.speaking
+            );
+
+        if (!raw) {
+
+            return {
+                version: 1,
+                topics: [],
+                recordings: [],
+                transcripts: []
+            };
+        }
+
+        const data =
+            JSON.parse(raw);
+
+        if (
+            !data ||
+            typeof data !== "object"
+        ) {
+
+            throw new Error(
+                "Invalid speaking_data structure."
+            );
+        }
+
+        if (!Array.isArray(data.topics)) {
+            data.topics = [];
+        }
+
+        if (!Array.isArray(data.recordings)) {
+            data.recordings = [];
+        }
+
+        if (!Array.isArray(data.transcripts)) {
+            data.transcripts = [];
+        }
+
+        return data;
+
+    } catch (error) {
+
+        addLog(
+            "Could not read speaking_data: " +
+            getErrorMessage(error),
+            "error"
+        );
+
+        return {
+            version: 1,
+            topics: [],
+            recordings: [],
+            transcripts: []
+        };
+    }
+}
+
+
+function getCurrentSpeakingRecordings() {
+
+    try {
+
+        const raw =
+            localStorage.getItem(
+                MODULE_STORAGE_KEYS.speaking
+            );
+
+        if (!raw) {
+            return [];
+        }
+
+        const speaking =
+            JSON.parse(raw);
+
+        if (
+            !speaking ||
+            typeof speaking !== "object" ||
+            !Array.isArray(speaking.recordings)
+        ) {
+
+            return [];
+        }
+
+        return speaking.recordings;
+
+    } catch (error) {
+
+        addLog(
+            "Could not read current speaking recordings: " +
+            getErrorMessage(error),
+            "error"
+        );
+
+        return [];
+    }
+}
+
+
+/* =========================================================
+   AUDIO VALIDATION
+========================================================= */
+
+function isAudioDataURL(value) {
+
+    if (typeof value !== "string") {
+        return false;
+    }
+
+    const audioData =
+        value.trim();
+
+    if (!audioData) {
+        return false;
+    }
+
+    return /^data:audio\/[a-zA-Z0-9.+-]+(?:;[^,]*)?;base64,/i.test(
+        audioData
+    );
+}
+
+
+/* =========================================================
+   AUDIO DATA URL → BLOB
+========================================================= */
+
+function audioDataURLToBlob(dataURL) {
+
+    try {
+
+        if (
+            typeof dataURL !== "string" ||
+            !dataURL
+        ) {
+
+            return null;
+        }
+
+        const commaIndex =
+            dataURL.indexOf(",");
+
+        if (commaIndex === -1) {
+            return null;
+        }
+
+        const header =
+            dataURL.slice(0, commaIndex);
+
+        const base64 =
+            dataURL.slice(commaIndex + 1);
+
+        const mimeMatch =
+            header.match(
+                /^data:([^;]+)/
+            );
+
+        const mimeType =
+            mimeMatch
+                ? mimeMatch[1]
+                : "audio/webm";
+
+        const binary =
+            atob(base64);
+
+        const bytes =
+            new Uint8Array(
+                binary.length
+            );
+
+        for (
+            let i = 0;
+            i < binary.length;
+            i++
+        ) {
+
+            bytes[i] =
+                binary.charCodeAt(i);
+        }
+
+        return new Blob(
+            [bytes],
+            {
+                type: mimeType
+            }
+        );
+
+    } catch (error) {
+
+        addLog(
+            "Audio conversion failed: " +
+            getErrorMessage(error),
+            "error"
+        );
+
+        return null;
+    }
+}
+
+
+/* =========================================================
+   CREATE BACKUP COPY
+========================================================= */
+
+function createSpeakingBackupData(
+    speakingData
+) {
+
+    let copy;
+
+    try {
+
+        copy =
+            JSON.parse(
+                JSON.stringify(
+                    speakingData
+                )
+            );
+
+    } catch (error) {
+
+        throw new Error(
+            "Could not copy speaking data: " +
+            getErrorMessage(error)
+        );
+    }
+
+    if (Array.isArray(copy.recordings)) {
+
+        copy.recordings =
+            copy.recordings.map(
+                recording => {
+
+                    const clean =
+                        {
+                            ...recording
+                        };
+
+                    delete clean.audioData;
+
+                    clean.metadata =
+                        {
+                            ...(clean.metadata || {}),
+                            cloudAudio: true
+                        };
+
+                    return clean;
+                }
+            );
+    }
+
+    return copy;
+}
+
+
+/* =========================================================
+   BACKUP OBJECT
+========================================================= */
+
+function buildBackupData() {
+
+    const storageData =
+        scanRelevantStorage();
+
+    const speakingData =
+        getSpeakingData();
+
+    if (
+        storageData[
+            MODULE_STORAGE_KEYS.speaking
+        ]
+    ) {
+
+        storageData[
+            MODULE_STORAGE_KEYS.speaking
+        ] =
+            createSpeakingBackupData(
+                speakingData
+            );
+    }
+
+    const backup = {
+
+        backupFormat:
+            "shadow-english-backup",
+
+        backupVersion: 2,
+
+        createdAt:
+            new Date().toISOString(),
+
+        application:
+            "English Learning App",
+
+        modules: {
+
+            shadowing:
+                storageData[
+                    MODULE_STORAGE_KEYS.shadowing
+                ] || null,
+
+            reading:
+                storageData[
+                    MODULE_STORAGE_KEYS.reading
+                ] || null,
+
+            speaking:
+                storageData[
+                    MODULE_STORAGE_KEYS.speaking
+                ] || null
+        },
+
+        settings: {},
+
+        additionalData: {}
+    };
+
+
+    for (const key of Object.keys(storageData)) {
+
+        if (
+            key === MODULE_STORAGE_KEYS.shadowing ||
+            key === MODULE_STORAGE_KEYS.reading ||
+            key === MODULE_STORAGE_KEYS.speaking
+        ) {
+
+            continue;
+        }
+
+        backup.additionalData[key] =
+            storageData[key];
+    }
+
+    return backup;
+}
+
+
+/* =========================================================
+   BLOB HELPERS
+========================================================= */
+
+function blobFromText(
+    text,
+    type = "application/json"
+) {
+
+    return new Blob(
+        [text],
+        { type }
+    );
+}
+
+
+/* =========================================================
+   TELEGRAM SEND DOCUMENT
+========================================================= */
+
+async function sendTelegramDocument(
+    token,
+    chatId,
+    blob,
+    filename,
+    caption = ""
+) {
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "chat_id",
+        chatId
+    );
+
+    formData.append(
+        "document",
+        blob,
+        filename
+    );
+
+    if (caption) {
+
+        formData.append(
+            "caption",
+            caption
+        );
+    }
+
+    return telegramRequest(
+        token,
+        "sendDocument",
+        {
+            method: "POST",
+            body: formData
+        }
+    );
+}
+
+
+/* =========================================================
+   TELEGRAM AUDIO UPLOAD
+========================================================= */
+
+async function uploadRecording(
+    token,
+    chatId,
+    recording,
+    sequence,
+    timestampValue
+) {
+
+    if (!recording) {
+
+        addLog(
+            "Recording " +
+            sequence +
+            " is empty. Skipping.",
+            "warning"
+        );
+
+        return {
+            uploaded: false,
+            skipped: true
+        };
+    }
+
+
+    const audioData =
+        recording.audioData;
+
+
+    if (!isAudioDataURL(audioData)) {
+
+        addLog(
+            "Recording " +
+            sequence +
+            " has no usable audioData. Skipping.",
+            "warning"
+        );
+
+        return {
+            uploaded: false,
+            skipped: true
+        };
+    }
+
+
+    const blob =
+        audioDataURLToBlob(
+            audioData
+        );
+
+
+    if (!blob || blob.size === 0) {
+
+        addLog(
+            "Recording " +
+            sequence +
+            " could not be converted to audio. Skipping.",
+            "warning"
+        );
+
+        return {
+            uploaded: false,
+            skipped: true
+        };
+    }
+
+
+    let filename =
+        recording.filename;
+
+    if (!filename) {
+
+        filename =
+            "speaking_recording_" +
+            sequence +
+            ".webm";
+    }
+
+
+    const caption =
+        "Shadow English Speaking Recording\n" +
+        "Recording: " + sequence + "\n" +
+        "ID: " + (recording.id || "unknown") + "\n" +
+        "Topic: " + (recording.topic || "unknown") + "\n" +
+        "Mode: " + (recording.mode || "unknown") + "\n" +
+        "Duration: " + (recording.duration || 0) + " seconds\n" +
+        "Backup: " + timestampValue;
+
+
+    try {
+
+        addLog(
+            "Uploading recording " +
+            sequence +
+            ": " +
+            filename +
+            " (" +
+            formatBytes(blob.size) +
+            ")",
+            "info"
+        );
+
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            "chat_id",
+            chatId
+        );
+
+        formData.append(
+            "audio",
+            blob,
+            filename
+        );
+
+        formData.append(
+            "caption",
+            caption
+        );
+
+
+        let result;
+
+
+        try {
+
+            result =
+                await telegramRequest(
+                    token,
+                    "sendAudio",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+        } catch (audioError) {
+
+            addLog(
+                "sendAudio failed for recording " +
+                sequence +
+                ". Trying document upload...",
+                "warning"
+            );
+
+
+            const documentForm =
+                new FormData();
+
+            documentForm.append(
+                "chat_id",
+                chatId
+            );
+
+            documentForm.append(
+                "document",
+                blob,
+                filename
+            );
+
+            documentForm.append(
+                "caption",
+                caption
+            );
+
+
+            result =
+                await telegramRequest(
+                    token,
+                    "sendDocument",
+                    {
+                        method: "POST",
+                        body: documentForm
+                    }
+                );
+        }
+
+
+        const messageId =
+            result?.result?.message_id;
+
+
+        addLog(
+            "Recording " +
+            sequence +
+            " uploaded successfully" +
+            (
+                messageId
+                    ? " • Telegram message " + messageId
+                    : ""
+            ),
+            "success"
+        );
+
+
+        return {
+            uploaded: true,
+            skipped: false,
+            messageId: messageId || null
+        };
+
+
+    } catch (error) {
+
+        addLog(
+            "Recording " +
+            sequence +
+            " upload failed: " +
+            getErrorMessage(error),
+            "error"
+        );
+
+
+        return {
+            uploaded: false,
+            skipped: false,
+            error: getErrorMessage(error)
+        };
+    }
+}
+
+
+/* =========================================================
+   UPLOAD ALL RECORDINGS
+========================================================= */
+
+async function uploadAllRecordings(
+    token,
+    chatIdValue,
+    timestampValue,
+    startingSequence = 1
+) {
+
+    const recordings =
+        getCurrentSpeakingRecordings();
+
+
+    addLog(
+        "Current speaking_data recording count: " +
+        recordings.length,
+        "info"
+    );
+
+
+    if (!recordings.length) {
+
+        addLog(
+            "No speaking recordings found.",
+            "info"
+        );
+
+        return {
+            uploaded: 0,
+            skipped: 0,
+            failed: 0
+        };
+    }
+
+
+    addLog(
+        "Found " +
+        recordings.length +
+        " speaking recording(s).",
+        "info"
+    );
+
+
+    let uploaded = 0;
+    let skipped = 0;
+    let failed = 0;
+
+
+    for (
+        let i = 0;
+        i < recordings.length;
+        i++
+    ) {
+
+        const result =
+            await uploadRecording(
+                token,
+                chatIdValue,
+                recordings[i],
+                startingSequence + i,
+                timestampValue
+            );
+
+
+        if (result.uploaded) {
+
+            uploaded++;
+
+        } else if (result.skipped) {
+
+            skipped++;
+
+        } else {
+
+            failed++;
+        }
+    }
+
+
+    addLog(
+        "Recording upload complete: " +
+        uploaded +
+        " uploaded, " +
+        skipped +
+        " skipped, " +
+        failed +
+        " failed.",
+        failed > 0
+            ? "warning"
+            : "success"
+    );
+
+
+    return {
+        uploaded,
+        skipped,
+        failed
+    };
+}
+
+
+/* =========================================================
+   UPLOAD JSON BACKUP
+========================================================= */
+
+async function uploadJSONBackup(
+    token,
+    chatId,
+    backup,
+    timestampValue
+) {
+
+    const json =
+        JSON.stringify(
+            backup,
+            null,
+            2
+        );
+
+
+    const safeFilename =
+        "backup_data_" +
+        new Date()
+            .toISOString()
+            .replace(/[-:]/g, "")
+            .replace(/\.\d{3}Z$/, "")
+            .replace("T", "_") +
+        ".json";
+
+
+    const blob =
+        blobFromText(
+            json,
+            "application/json"
+        );
+
+
+    dataSizeValue.textContent =
+        formatBytes(blob.size);
+
+
+    addLog(
+        "Preparing JSON backup: " +
+        safeFilename,
+        "info"
+    );
+
+
+    addLog(
+        "JSON size: " +
+        formatBytes(blob.size),
+        "info"
+    );
+
+
+    addLog(
+        "Sending item 1: " +
+        safeFilename,
+        "info"
+    );
+
+
+    const result =
+        await sendTelegramDocument(
+            token,
+            chatId,
+            blob,
+            safeFilename,
+            "Shadow English JSON Backup"
+        );
+
+
+    const messageId =
+        result?.result?.message_id;
+
+
+    addLog(
+        "Sent successfully: " +
+        safeFilename +
+        (
+            messageId
+                ? " • Telegram message " + messageId
+                : ""
+        ),
+        "success"
+    );
+
+
+    return {
+        filename: safeFilename,
+        size: blob.size,
+        messageId: messageId || null
+    };
+}
+
+
+/* =========================================================
+   UPLOAD DATA
+========================================================= */
+
+async function uploadData() {
+
+    const credentials =
+        getCredentials();
+
+
+    if (
+        !credentials.token ||
+        !credentials.chatId
+    ) {
+
+        addLog(
+            "Telegram credentials are missing.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    uploadBtn.disabled = true;
+    restoreBtn.disabled = true;
+
+
+    try {
+
+        setStatus(
+            "Preparing...",
+            "Complete cloud backup"
+        );
+
+
+        addLog(
+            "Starting complete cloud backup.",
+            "info"
+        );
+
+
+        addLog(
+            "Scanning localStorage for user-generated data...",
+            "info"
+        );
+
+
+        const storageData =
+            scanRelevantStorage();
+
+
+        const storageKeys =
+            Object.keys(storageData);
+
+
+        addLog(
+            "Found " +
+            storageKeys.length +
+            " relevant storage key(s).",
+            "success"
+        );
+
+
+        for (const key of storageKeys) {
+
+            addLog(
+                "Preparing storage item: " +
+                key,
+                "info"
+            );
+        }
+
+
+        addLog(
+            "Sensitive credentials and temporary state were excluded.",
+            "success"
+        );
+
+
+        const speakingData =
+            getSpeakingData();
+
+
+        const recordingCount =
+            Array.isArray(
+                speakingData.recordings
+            )
+                ? speakingData.recordings.length
+                : 0;
+
+
+        addLog(
+            "Speaking storage check: " +
+            recordingCount +
+            " recording(s) currently loaded.",
+            "info"
+        );
+
+
+        if (recordingCount > 0) {
+
+            addLog(
+                "Found " +
+                recordingCount +
+                " speaking recording(s).",
+                "info"
+            );
+
+        } else {
+
+            addLog(
+                "No recordings to upload.",
+                "info"
+            );
+        }
+
+
+        addLog(
+            "Audio payloads will NOT be embedded in the JSON backup.",
+            "info"
+        );
+
+
+        const backup =
+            buildBackupData();
+
+
+        const backupTimestamp =
+            new Date()
+                .toISOString();
+
+
+        setStatus(
+            "Uploading JSON...",
+            "Uploading application backup"
+        );
+
+
+        await uploadJSONBackup(
+            credentials.token,
+            credentials.chatId,
+            backup,
+            backupTimestamp
+        );
+
+
+        let audioResult = {
+            uploaded: 0,
+            skipped: 0,
+            failed: 0
+        };
+
+
+        if (recordingCount > 0) {
+
+            setStatus(
+                "Uploading recordings...",
+                "Uploading speaking recordings"
+            );
+
+
+            addLog(
+                "Starting separate recording uploads.",
+                "info"
+            );
+
+
+            audioResult =
+                await uploadAllRecordings(
+                    credentials.token,
+                    credentials.chatId,
+                    backupTimestamp,
+                    2
+                );
+        }
+
+
+        localStorage.setItem(
+            TELEGRAM_KEYS.lastBackup,
+            new Date().toISOString()
+        );
+
+
+        lastBackupValue.textContent =
+            new Date().toLocaleString();
+
+
+        if (
+            recordingCount > 0 &&
+            audioResult.uploaded === recordingCount
+        ) {
+
+            setStatus(
+                "Backup Complete",
+                "JSON + all recordings uploaded"
+            );
+
+
+            addLog(
+                "Complete backup finished.",
+                "success"
+            );
+
+
+            addLog(
+                "JSON data and all " +
+                audioResult.uploaded +
+                " recording(s) are stored in Telegram.",
+                "success"
+            );
+
+
+        } else if (
+            recordingCount > 0
+        ) {
+
+            setStatus(
+                "Backup Complete",
+                "JSON uploaded; recordings partially uploaded"
+            );
+
+
+            addLog(
+                "JSON backup completed.",
+                "success"
+            );
+
+
+            addLog(
+                "Recording result: " +
+                audioResult.uploaded +
+                " uploaded, " +
+                audioResult.skipped +
+                " skipped, " +
+                audioResult.failed +
+                " failed.",
+                "warning"
+            );
+
+
+        } else {
+
+            setStatus(
+                "Backup Complete",
+                "JSON uploaded"
+            );
+
+
+            addLog(
+                "Complete backup finished.",
+                "success"
+            );
+
+
+            addLog(
+                "JSON data uploaded successfully. No recordings were present.",
+                "success"
+            );
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Backup error:",
+            error
+        );
+
+
+        addLog(
+            "Backup failed: " +
+            getErrorMessage(error),
+            "error"
+        );
+
+
+        setStatus(
+            "Backup Failed",
+            "Backup error"
+        );
+
+
+    } finally {
+
+        uploadBtn.disabled = false;
+        restoreBtn.disabled = false;
+    }
+}
+
+
+/* =========================================================
+   TELEGRAM UPDATE SEARCH
+========================================================= */
+
+async function getAllAvailableUpdates(
+    token
+) {
+
+    const allUpdates = [];
+
+    let offset = undefined;
+
+    const MAX_BATCHES = 100;
+
+    for (
+        let batchNumber = 1;
+        batchNumber <= MAX_BATCHES;
+        batchNumber++
+    ) {
+
+        let method =
+            "getUpdates?limit=100&timeout=0";
+
+        if (
+            offset !== undefined
+        ) {
+
+            method +=
+                "&offset=" +
+                encodeURIComponent(offset);
+        }
+
+
+        const response =
+            await telegramRequest(
+                token,
+                method
+            );
+
+
+        const batch =
+            Array.isArray(response.result)
+                ? response.result
+                : [];
+
+
+        if (!batch.length) {
+            break;
+        }
+
+
+        allUpdates.push(
+            ...batch
+        );
+
+
+        const lastUpdateId =
+            batch[batch.length - 1].update_id;
+
+
+        offset =
+            lastUpdateId + 1;
+
+
+        addLog(
+            "Restore search batch " +
+            batchNumber +
+            ": found " +
+            batch.length +
+            " Telegram update(s).",
+            "info"
+        );
+
+
+        if (batch.length < 100) {
+            break;
+        }
+    }
+
+
+    return allUpdates;
+}
+
+
+/* =========================================================
+   RESTORE DOCUMENT IDENTIFICATION
+========================================================= */
+
+function isJSONBackupDocument(
+    message
+) {
+
+    if (!message) {
+        return false;
+    }
+
+
+    const document =
+        message.document;
+
+
+    if (!document) {
+        return false;
+    }
+
+
+    const filename =
+        String(
+            document.file_name || ""
+        ).toLowerCase();
+
+
+    const mimeType =
+        String(
+            document.mime_type || ""
+        ).toLowerCase();
+
+
+    const caption =
+        String(
+            message.caption || ""
+        ).toLowerCase();
+
+
+    const hasBackupCaption =
+        caption.includes(
+            "shadow english json backup"
+        );
+
+
+    const hasJSONFilename =
+        filename.endsWith(".json");
+
+
+    const hasJSONMime =
+        mimeType === "application/json";
+
+
+    return (
+        hasBackupCaption ||
+        hasJSONFilename ||
+        hasJSONMime
+    );
+}
+
+
+/* =========================================================
+   CHAT ID COMPARISON
+========================================================= */
+
+function chatIdsMatch(
+    messageChatId,
+    configuredChatId
+) {
+
+    if (
+        messageChatId === undefined ||
+        messageChatId === null
+    ) {
+
+        return false;
+    }
+
+
+    return String(messageChatId) ===
+           String(configuredChatId);
+}
+
+
+/* =========================================================
+   ROBUST TELEGRAM FILE DOWNLOAD
+========================================================= */
+
+async function downloadTelegramFile(
+    token,
+    fileId,
+    expectedFilename = ""
+) {
+
+    if (!token) {
+
+        throw new Error(
+            "Telegram bot token is missing."
+        );
+    }
+
+
+    if (!fileId) {
+
+        throw new Error(
+            "Telegram file_id is missing."
+        );
+    }
+
+
+    /*
+       We try several times.
+
+       Every attempt asks Telegram for a fresh
+       file_path. This is important because the
+       download URL returned by getFile is only
+       guaranteed for a limited period.
+    */
+
+    const MAX_ATTEMPTS = 3;
+
+    let lastError = null;
+
+
+    for (
+        let attempt = 1;
+        attempt <= MAX_ATTEMPTS;
+        attempt++
+    ) {
+
+        try {
+
+            addLog(
+                "Preparing Telegram file download (attempt " +
+                attempt +
+                "/" +
+                MAX_ATTEMPTS +
+                ")...",
+                "info"
+            );
+
+
+            /*
+               Always request a fresh file path.
+            */
+
+            const fileInfo =
+                await telegramRequest(
+                    token,
+                    "getFile?file_id=" +
+                    encodeURIComponent(fileId)
+                );
+
+
+            const file =
+                fileInfo?.result;
+
+
+            if (!file) {
+
+                throw new Error(
+                    "Telegram returned no file information."
+                );
+            }
+
+
+            const filePath =
+                file.file_path;
+
+
+            if (!filePath) {
+
+                throw new Error(
+                    "Telegram did not return a file_path."
+                );
+            }
+
+
+            if (
+                file.file_size !== undefined &&
+                Number(file.file_size) > 20 * 1024 * 1024
+            ) {
+
+                throw new Error(
+                    "Telegram Bot API cannot download this file because it is larger than 20 MB."
+                );
+            }
+
+
+            addLog(
+                "Telegram file path obtained successfully.",
+                "success"
+            );
+
+
+            const fileURL =
+                "https://api.telegram.org/file/bot" +
+                token +
+                "/" +
+                filePath;
+
+
+            addLog(
+                "Requesting backup file from Telegram file server...",
+                "info"
+            );
+
+
+            /*
+               AbortController prevents the restore from
+               hanging forever if the file server/network
+               stops responding.
+            */
+
+            const controller =
+                new AbortController();
+
+
+            const timeout =
+                setTimeout(
+                    () => {
+                        controller.abort();
+                    },
+                    30000
+                );
+
+
+            let response;
+
+
+            try {
+
+                response =
+                    await fetch(
+                        fileURL,
+                        {
+                            method: "GET",
+
+                            mode: "cors",
+
+                            cache: "no-store",
+
+                            redirect: "follow",
+
+                            credentials: "omit",
+
+                            signal:
+                                controller.signal,
+
+                            headers: {
+                                "Accept":
+                                    "application/json,text/plain,*/*"
+                            }
+                        }
+                    );
+
+            } finally {
+
+                clearTimeout(
+                    timeout
+                );
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Telegram file server returned HTTP " +
+                    response.status +
+                    " " +
+                    response.statusText
+                );
+            }
+
+
+            const contentType =
+                String(
+                    response.headers.get(
+                        "content-type"
+                    ) || ""
+                ).toLowerCase();
+
+
+            addLog(
+                "Telegram file server responded successfully.",
+                "success"
+            );
+
+
+            /*
+               Read as text because the expected backup
+               is JSON.
+            */
+
+            const json =
+                await response.text();
+
+
+            if (
+                !json ||
+                !json.trim()
+            ) {
+
+                throw new Error(
+                    "Telegram returned an empty backup file."
+                );
+            }
+
+
+            /*
+               Verify JSON BEFORE restoring anything.
+            */
+
+            let parsed;
+
+            try {
+
+                parsed =
+                    JSON.parse(
+                        json
+                    );
+
+            } catch {
+
+                /*
+                   If Telegram unexpectedly returned HTML
+                   or another response, make the error
+                   obvious.
+                */
+
+                if (
+                    contentType.includes(
+                        "text/html"
+                    )
+                ) {
+
+                    throw new Error(
+                        "Telegram returned an HTML response instead of the JSON backup."
+                    );
+                }
+
+                throw new Error(
+                    "Telegram file was downloaded, but its contents are not valid JSON."
+                );
+            }
+
+
+            /*
+               Verify this is actually our backup.
+            */
+
+            if (
+                !parsed ||
+                parsed.backupFormat !==
+                    "shadow-english-backup"
+            ) {
+
+                throw new Error(
+                    "The downloaded JSON is not a valid Shadow English backup."
+                );
+            }
+
+
+            addLog(
+                "Backup JSON downloaded and validated successfully.",
+                "success"
+            );
+
+
+            if (expectedFilename) {
+
+                addLog(
+                    "Verified backup file: " +
+                    expectedFilename,
+                    "success"
+                );
+            }
+
+
+            return {
+                json,
+                backup: parsed,
+                filePath,
+                fileSize:
+                    json.length
+            };
+
+
+        } catch (error) {
+
+            lastError =
+                error;
+
+
+            let message =
+                getErrorMessage(
+                    error
+                );
+
+
+            if (
+                error?.name ===
+                "AbortError"
+            ) {
+
+                message =
+                    "Telegram file download timed out after 30 seconds.";
+            }
+
+
+            addLog(
+                "Download attempt " +
+                attempt +
+                " failed: " +
+                message,
+                "warning"
+            );
+
+
+            /*
+               Wait briefly before retrying.
+            */
+
+            if (
+                attempt <
+                MAX_ATTEMPTS
+            ) {
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            1200
+                        )
+                );
+            }
+        }
+    }
+
+
+    /*
+       Give a useful final error instead of
+       simply "Failed to fetch".
+    */
+
+    if (
+        lastError?.message ===
+        "Failed to fetch"
+    ) {
+
+        throw new Error(
+            "The backup was found, but the browser could not read Telegram's file download response. " +
+            "This is usually a browser/network restriction on the Telegram file-server request, " +
+            "not a missing backup."
+        );
+    }
+
+
+    throw new Error(
+        "Could not download the Telegram backup after " +
+        MAX_ATTEMPTS +
+        " attempts. " +
+        getErrorMessage(lastError)
+    );
+}
+
+
+/* =========================================================
+   RESTORE DATA
+========================================================= */
+
+async function restoreData() {
+
+    const credentials =
+        getCredentials();
+
+
+    if (
+        !credentials.token ||
+        !credentials.chatId
+    ) {
+
+        addLog(
+            "Telegram credentials are missing.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    restoreBtn.disabled = true;
+    uploadBtn.disabled = true;
+
+
+    try {
+
+        setStatus(
+            "Searching...",
+            "Restore data"
+        );
+
+
+        addLog(
+            "Searching Telegram for available backup updates...",
+            "info"
+        );
+
+
+        addLog(
+            "Searching the configured Telegram chat for JSON backups.",
+            "info"
+        );
+
+
+        const updates =
+            await getAllAvailableUpdates(
+                credentials.token
+            );
+
+
+        addLog(
+            "Total available Telegram updates inspected: " +
+            updates.length,
+            "info"
+        );
+
+
+        const messages = [];
+
+
+        for (
+            const update
+            of updates
+        ) {
+
+            const message =
+                update.message ||
+                update.channel_post;
+
+
+            if (!message) {
+                continue;
+            }
+
+
+            if (
+                !chatIdsMatch(
+                    message.chat?.id,
+                    credentials.chatId
+                )
+            ) {
+
+                continue;
+            }
+
+
+            if (
+                !isJSONBackupDocument(
+                    message
+                )
+            ) {
+
+                continue;
+            }
+
+
+            const document =
+                message.document;
+
+
+            const messageDate =
+                Number(
+                    message.date
+                ) || 0;
+
+
+            messages.push({
+
+                updateId:
+                    Number(
+                        update.update_id
+                    ) || 0,
+
+                messageId:
+                    Number(
+                        message.message_id
+                    ) || 0,
+
+                date:
+                    messageDate,
+
+                dateObject:
+                    messageDate
+                        ? new Date(
+                            messageDate * 1000
+                        )
+                        : null,
+
+                document,
+
+                caption:
+                    message.caption || ""
+            });
+        }
+
+
+        addLog(
+            "Backup candidates found in configured chat: " +
+            messages.length,
+            messages.length
+                ? "success"
+                : "warning"
+        );
+
+
+        if (!messages.length) {
+
+            addLog(
+                "No JSON backup was found in currently available Telegram updates.",
+                "warning"
+            );
+
+
+            addLog(
+                "The search checked all available update batches and ignored newer recording files.",
+                "info"
+            );
+
+
+            setStatus(
+                "Nothing Found",
+                "No available backup found"
+            );
+
+
+            return;
+        }
+
+
+        messages.sort(
+            (a, b) => {
+
+                if (
+                    b.date !== a.date
+                ) {
+
+                    return b.date - a.date;
+                }
+
+                return b.messageId -
+                       a.messageId;
+            }
+        );
+
+
+        const selected =
+            messages[0];
+
+
+        addLog(
+            "Newest available backup selected: " +
+            (
+                selected.document.file_name ||
+                "unnamed JSON"
+            ),
+            "success"
+        );
+
+
+        if (selected.dateObject) {
+
+            addLog(
+                "Backup message date: " +
+                selected.dateObject.toLocaleString(),
+                "info"
+            );
+        }
+
+
+        addLog(
+            "Telegram message ID: " +
+            selected.messageId,
+            "info"
+        );
+
+
+        addLog(
+            "Downloading backup from Telegram...",
+            "info"
+        );
+
+
+        /*
+           ROBUST DOWNLOAD
+
+           This function:
+           - gets a fresh file_path
+           - retries
+           - times out
+           - validates HTTP response
+           - validates JSON
+           - validates backupFormat
+        */
+
+        const downloadResult =
+            await downloadTelegramFile(
+                credentials.token,
+                selected.document.file_id,
+                selected.document.file_name || ""
+            );
+
+
+        const backup =
+            downloadResult.backup;
+
+
+        addLog(
+            "Downloaded " +
+            formatBytes(
+                downloadResult.fileSize
+            ) +
+            " of JSON data.",
+            "info"
+        );
+
+
+        /*
+           Only now modify localStorage.
+        */
+
+        applyRestoredBackup(
+            backup
+        );
+
+
+        setStatus(
+            "Restore Complete",
+            "JSON/application data restored"
+        );
+
+
+        addLog(
+            "Application JSON data restored successfully.",
+            "success"
+        );
+
+
+        addLog(
+            "Telegram recordings remain stored separately in the cloud.",
+            "info"
+        );
+
+
+        addLog(
+            "Please reload the application pages to refresh their displays.",
+            "info"
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Restore error:",
+            error
+        );
+
+
+        addLog(
+            "Restore failed: " +
+            getErrorMessage(error),
+            "error"
+        );
+
+
+        setStatus(
+            "Restore Failed",
+            "Restore error"
+        );
+
+
+    } finally {
+
+        restoreBtn.disabled = false;
+        uploadBtn.disabled = false;
+    }
+}
+
+
+/* =========================================================
+   APPLY RESTORED BACKUP
+========================================================= */
+
+function applyRestoredBackup(
+    backup
+) {
+
+    if (
+        !backup ||
+        backup.backupFormat !==
+            "shadow-english-backup"
+    ) {
+
+        throw new Error(
+            "Invalid Shadow English backup file."
+        );
+    }
+
+
+    if (
+        backup.modules &&
+        backup.modules.shadowing !== null &&
+        backup.modules.shadowing !== undefined
+    ) {
+
+        localStorage.setItem(
+            MODULE_STORAGE_KEYS.shadowing,
+            JSON.stringify(
+                backup.modules.shadowing
+            )
+        );
+    }
+
+
+    if (
+        backup.modules &&
+        backup.modules.reading !== null &&
+        backup.modules.reading !== undefined
+    ) {
+
+        localStorage.setItem(
+            MODULE_STORAGE_KEYS.reading,
+            JSON.stringify(
+                backup.modules.reading
+            )
+        );
+    }
+
+
+    if (
+        backup.modules &&
+        backup.modules.speaking !== null &&
+        backup.modules.speaking !== undefined
+    ) {
+
+        const speaking =
+            JSON.parse(
+                JSON.stringify(
+                    backup.modules.speaking
+                )
+            );
+
+
+        if (Array.isArray(speaking.recordings)) {
+
+            speaking.recordings =
+                speaking.recordings.map(
+                    recording => {
+
+                        const clean =
+                            {
+                                ...recording
+                            };
+
+                        delete clean.audioData;
+
+                        return clean;
+                    }
+                );
+        }
+
+
+        localStorage.setItem(
+            MODULE_STORAGE_KEYS.speaking,
+            JSON.stringify(
+                speaking
+            )
+        );
+    }
+
+
+    if (
+        backup.additionalData &&
+        typeof backup.additionalData === "object"
+    ) {
+
+        for (
+            const [key, value]
+            of Object.entries(
+                backup.additionalData
+            )
+        ) {
+
+            if (
+                isSensitiveKey(key) ||
+                isTemporaryKey(key)
+            ) {
+
+                continue;
+            }
+
+
+            localStorage.setItem(
+                key,
+                JSON.stringify(value)
+            );
+        }
+    }
+
+
+    window.dispatchEvent(
+        new Event("backupDataRestored")
+    );
+}
+
+
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+function initialize() {
+
+    addLog(
+        "Backup & Sync module initialized.",
+        "success"
+    );
+
+
+    addLog(
+        "Known modules: Shadowing, Reading and Speaking.",
+        "info"
+    );
+
+
+    addLog(
+        "Telegram credentials are excluded from backup data.",
+        "success"
+    );
+
+
+    addLog(
+        "Speaking recordings will be uploaded separately.",
+        "info"
+    );
+
+
+    addLog(
+        "Restore downloads JSON only; recordings remain in Telegram.",
+        "info"
+    );
+
+
+    loadCredentials();
+
+
+    const lastBackup =
+        localStorage.getItem(
+            TELEGRAM_KEYS.lastBackup
+        );
+
+
+    if (lastBackup) {
+
+        const date =
+            new Date(lastBackup);
+
+
+        if (!isNaN(date.getTime())) {
+
+            lastBackupValue.textContent =
+                date.toLocaleString();
+        }
+    }
+}
+
+
+/* =========================================================
+   EVENT LISTENERS
+========================================================= */
+
+toggleTokenBtn.addEventListener(
+    "click",
+    () => {
+
+        if (
+            botTokenInput.type ===
+            "password"
+        ) {
+
+            botTokenInput.type =
+                "text";
+
+            toggleTokenBtn.textContent =
+                "Hide";
+
+        } else {
+
+            botTokenInput.type =
+                "password";
+
+            toggleTokenBtn.textContent =
+                "Show";
+        }
+    }
+);
+
+
+saveCredentialsBtn.addEventListener(
+    "click",
+    () => {
+
+        if (
+            saveCredentials()
+        ) {
+
+            setStatus(
+                "Credentials Saved",
+                "Telegram credentials saved"
+            );
+        }
+    }
+);
+
+
+testConnectionBtn.addEventListener(
+    "click",
+    testConnection
+);
+
+
+uploadBtn.addEventListener(
+    "click",
+    uploadData
+);
+
+
+restoreBtn.addEventListener(
+    "click",
+    restoreData
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+initialize();
+
+</script>
+
+</body>
+</html>
