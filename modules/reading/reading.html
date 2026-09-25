@@ -1,0 +1,4923 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<title>ShadowEnglish - Wikipedia Reader</title>
+
+<style>
+
+/* =========================================================
+   RESET & DESIGN TOKENS
+========================================================= */
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+}
+
+:root {
+    --blue: #2563eb;
+    --green: #10b981;
+
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --text: #17202a;
+    --muted: #64748b;
+
+    --border: #e0e5eb;
+    --input-border: #d7dde6;
+
+    --radius: 11px;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, Helvetica, sans-serif;
+
+    transition:
+        background-color .25s ease,
+        color .25s ease;
+}
+
+button,
+input {
+    font-family: inherit;
+}
+
+button {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.app {
+    width: 100%;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -.5px;
+}
+
+.logo span {
+    color: var(--blue);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.status {
+    color: #6b7280;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.dictionary-button {
+    width: 36px;
+    height: 36px;
+
+    border: 1px solid #d8dee7;
+    border-radius: 8px;
+
+    background: white;
+    color: var(--text);
+
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.dictionary-button:active {
+    transform: scale(.94);
+}
+
+/* =========================================================
+   CONTROL CARD
+========================================================= */
+
+.wiki-controls-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 12px;
+    margin-bottom: 12px;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+
+.input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.wiki-input {
+    flex: 1;
+    min-width: 0;
+
+    height: 44px;
+
+    padding: 0 13px;
+
+    border: 1px solid var(--input-border);
+    border-radius: 9px;
+
+    background: #ffffff;
+    color: var(--text);
+
+    font-size: 14px;
+    outline: none;
+}
+
+.wiki-input:focus {
+    border-color: var(--blue);
+}
+
+.action-btn {
+    height: 44px;
+
+    padding: 0 15px;
+
+    border: 0;
+    border-radius: 9px;
+
+    background: var(--blue);
+    color: white;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.action-btn.secondary {
+    background: var(--green);
+}
+
+.action-btn:active {
+    transform: scale(.97);
+}
+
+.action-btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   OPTIONS
+========================================================= */
+
+.option-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+    gap: 10px;
+
+    padding-top: 8px;
+
+    border-top: 1px solid #edf0f4;
+}
+
+.toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: #4b5563;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--blue);
+}
+
+/* =========================================================
+   READING OPTIONS
+========================================================= */
+
+.reader-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    flex-wrap: wrap;
+}
+
+.font-controls {
+    display: flex;
+    align-items: center;
+
+    background: #eef1f5;
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.font-btn {
+    min-width: 34px;
+    height: 29px;
+
+    border: 0;
+    border-radius: 6px;
+
+    background: transparent;
+    color: #475569;
+
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.font-size-label {
+    min-width: 42px;
+    text-align: center;
+
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+}
+
+/* =========================================================
+   THEME SELECTOR
+========================================================= */
+
+.theme-selector {
+    display: flex;
+    gap: 4px;
+
+    background: #eef1f5;
+    padding: 3px;
+
+    border-radius: 8px;
+}
+
+.theme-btn {
+    border: 0;
+
+    padding: 5px 10px;
+
+    border-radius: 6px;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    background: transparent;
+    color: #4b5563;
+}
+
+.theme-btn.active {
+    background: #ffffff;
+    color: #1d4ed8;
+
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+/* =========================================================
+   ARTICLE
+========================================================= */
+
+.reader-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 24px;
+
+    min-height: 400px;
+
+    transition:
+        background-color .25s ease,
+        color .25s ease;
+}
+
+/* LIGHT */
+
+body.theme-light {
+    background: #f4f6f8;
+    color: #17202a;
+}
+
+body.theme-light .reader-card {
+    background: #ffffff;
+    color: #17202a;
+}
+
+/* SEPIA */
+
+body.theme-sepia {
+    background: #f4ecd8;
+    color: #3c2f2f;
+}
+
+body.theme-sepia .reader-card {
+    background: #fbf0d9;
+    color: #3c2f2f;
+    border-color: #e6d7b8;
+}
+
+body.theme-sepia .wiki-controls-card {
+    background: #fbf0d9;
+    border-color: #e6d7b8;
+}
+
+body.theme-sepia .wiki-input {
+    background: #f4ecd8;
+    color: #3c2f2f;
+    border-color: #dccba8;
+}
+
+/* DARK */
+
+body.theme-dark {
+    background: #0b0f19;
+    color: #e2e8f0;
+}
+
+body.theme-dark .reader-card {
+    background: #121826;
+    color: #e2e8f0;
+    border-color: #1e293b;
+}
+
+body.theme-dark .wiki-controls-card {
+    background: #121826;
+    border-color: #1e293b;
+}
+
+body.theme-dark .wiki-input {
+    background: #1e293b;
+    color: #ffffff;
+    border-color: #334155;
+}
+
+body.theme-dark .status {
+    color: #94a3b8;
+}
+
+/* =========================================================
+   ARTICLE HEADER
+========================================================= */
+
+.article-title {
+    margin: 0 0 7px;
+
+    font-size: 28px;
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+.article-source {
+    margin-bottom: 22px;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+body.theme-dark .article-source {
+    color: #94a3b8;
+}
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.article-section {
+    margin-bottom: 22px;
+}
+
+.section-heading {
+    margin: 25px 0 12px;
+
+    font-size: 21px;
+    line-height: 1.3;
+}
+
+.section-heading:first-child {
+    margin-top: 5px;
+}
+
+/* =========================================================
+   PARAGRAPH
+========================================================= */
+
+.article-paragraph {
+    position: relative;
+
+    font-size: var(--reader-font-size, 18px);
+    line-height: 1.65;
+
+    margin-bottom: 18px;
+
+    padding: 8px 12px;
+
+    border-left: 3px solid transparent;
+    border-radius: 0 8px 8px 0;
+
+    transition:
+        background-color .15s ease,
+        border-color .15s ease;
+}
+
+.article-paragraph:hover,
+.article-paragraph.active-focus {
+    border-left-color: var(--blue);
+    background: rgba(37,99,235,.05);
+}
+
+body.theme-sepia .article-paragraph:hover,
+body.theme-sepia .article-paragraph.active-focus {
+    border-left-color: #d97706;
+    background: rgba(217,119,6,.08);
+}
+
+body.theme-dark .article-paragraph:hover,
+body.theme-dark .article-paragraph.active-focus {
+    border-left-color: #38bdf8;
+    background: rgba(56,189,248,.08);
+}
+
+/* =========================================================
+   WORDS
+========================================================= */
+
+.reader-word {
+    display: inline;
+
+    border-radius: 3px;
+
+    cursor: pointer;
+
+    transition:
+        background-color .12s ease;
+}
+
+.reader-word:hover {
+    background: #dceaff;
+}
+
+body.theme-sepia .reader-word:hover {
+    background: #eedaa2;
+}
+
+body.theme-dark .reader-word:hover {
+    background: #1e3a8a;
+    color: white;
+}
+
+/* =========================================================
+   TTS
+========================================================= */
+
+.tts-para-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 8px;
+    padding: 3px 7px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    border-radius: 5px;
+    border: none;
+
+    background: #e0e7ff;
+    color: #3730a3;
+
+    cursor: pointer;
+
+    vertical-align: middle;
+}
+
+.tts-para-btn:hover {
+    background: #c7d2fe;
+}
+
+/* =========================================================
+   LOAD MORE
+========================================================= */
+
+.load-more-container {
+    text-align: center;
+
+    margin-top: 25px;
+    padding-top: 18px;
+
+    border-top: 1px dashed #cbd5e1;
+}
+
+.load-more-btn {
+    min-height: 42px;
+
+    padding: 0 22px;
+
+    background: var(--blue);
+    color: white;
+
+    border: none;
+    border-radius: 8px;
+
+    font-weight: 700;
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+.load-more-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.complete-message {
+    margin-top: 10px;
+
+    color: #059669;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-block {
+    padding: 45px 20px;
+
+    text-align: center;
+
+    color: #64748b;
+}
+
+.spinner {
+    width: 28px;
+    height: 28px;
+
+    margin: 0 auto 12px;
+
+    border: 3px solid #dbe4ef;
+    border-top-color: var(--blue);
+
+    border-radius: 50%;
+
+    animation: spin .8s linear infinite;
+}
+
+.spinner-inline {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin: 0 4px;
+    border: 2px solid #cbd5e1;
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    vertical-align: middle;
+}
+
+.section-loading-inline {
+    color: #64748b;
+    font-size: 13px;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 0;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.error-message {
+    color: #dc2626;
+}
+
+/* =========================================================
+   DICTIONARY MODAL
+========================================================= */
+
+.dictionary-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 9999;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 15px;
+
+    background: rgba(0,0,0,.58);
+
+    pointer-events: auto;
+
+    touch-action: none;
+    overscroll-behavior: contain;
+}
+
+.dictionary-overlay.open {
+    display: flex;
+}
+
+.dictionary-modal {
+    width: min(100%, 650px);
+
+    max-height: min(820px, 92vh);
+
+    overflow-y: auto;
+
+    border-radius: 16px;
+
+    background: #ffffff;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.25);
+
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+}
+
+/* =========================================================
+   DICTIONARY HEADER
+========================================================= */
+
+.dictionary-header {
+    position: sticky;
+
+    top: 0;
+
+    z-index: 2;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    padding: 13px;
+
+    background: white;
+
+    border-bottom: 1px solid #edf0f4;
+}
+
+.dictionary-search {
+    flex: 1;
+
+    min-width: 0;
+
+    height: 42px;
+
+    padding: 0 13px;
+
+    border: 1px solid #d7dde6;
+
+    border-radius: 8px;
+
+    outline: none;
+
+    font-size: 15px;
+}
+
+.dictionary-search:focus {
+    border-color: #2563eb;
+}
+
+.dictionary-search-button {
+    width: 42px;
+    height: 42px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+.dictionary-close {
+    width: 42px;
+    height: 42px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    background: #eef1f5;
+
+    color: #344054;
+
+    font-size: 20px;
+
+    cursor: pointer;
+}
+
+/* =========================================================
+   DICTIONARY CONTENT
+========================================================= */
+
+.dictionary-content {
+    padding: 20px;
+}
+
+.dictionary-loading {
+    padding: 35px 10px;
+
+    text-align: center;
+
+    color: #667085;
+
+    font-size: 14px;
+}
+
+/* =========================================================
+   WORD RESULT
+========================================================= */
+
+.word-heading {
+    display: flex;
+
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 10px;
+}
+
+.word-title {
+    margin: 0;
+
+    font-size: 32px;
+
+    line-height: 1.1;
+
+    font-weight: 800;
+}
+
+.word-syllables {
+    margin-top: 4px;
+
+    color: #2563eb;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+/* =========================================================
+   PRONUNCIATION
+========================================================= */
+
+.pronunciation-card {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 14px;
+
+    padding: 12px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 10px;
+}
+
+.pronunciation-box {
+    flex: 1;
+
+    min-width: 140px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 8px 12px;
+
+    border-radius: 8px;
+
+    background: white;
+
+    border: 1px solid #edf2f7;
+}
+
+.pronunciation-info {
+    display: flex;
+
+    flex-direction: column;
+}
+
+.pronunciation-label {
+    color: #2563eb;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+}
+
+.pronunciation-value {
+    margin-top: 2px;
+
+    color: #334155;
+
+    font-size: 15px;
+
+    font-family: Arial, sans-serif;
+}
+
+.audio-button {
+    height: 36px;
+
+    padding: 0 12px;
+
+    border: 0;
+
+    border-radius: 18px;
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 4px;
+
+    justify-content: center;
+
+    transition: all 0.15s ease;
+}
+
+.audio-button:hover {
+    background: #dbeafe;
+}
+
+.audio-button.playing {
+    background: #2563eb;
+
+    color: white;
+}
+
+.audio-button.error {
+    background: #fef2f2;
+
+    color: #ef4444;
+
+    font-size: 11px;
+}
+
+/* =========================================================
+   MEANING
+========================================================= */
+
+.meaning-section {
+    margin-top: 18px;
+}
+
+.section-label {
+    margin-bottom: 8px;
+
+    color: #64748b;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.5px;
+}
+
+.meaning-item {
+    margin-bottom: 12px;
+
+    padding-bottom: 10px;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.meaning-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.meaning-part {
+    display: inline-block;
+
+    padding: 2px 6px;
+
+    border-radius: 4px;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    margin-right: 6px;
+
+    text-transform: lowercase;
+
+    font-style: italic;
+}
+
+.meaning-text {
+    color: #1e293b;
+
+    font-size: 15px;
+
+    line-height: 1.5;
+}
+
+.meaning-example {
+    margin-top: 4px;
+
+    color: #64748b;
+
+    font-size: 13px;
+
+    font-style: italic;
+}
+
+/* =========================================================
+   HINDI MEANING
+========================================================= */
+
+.hindi-box {
+    margin-top: 16px;
+
+    padding: 13px;
+
+    border-radius: 10px;
+
+    background: #f0fdf4;
+
+    border: 1px solid #bbf7d0;
+}
+
+.hindi-word {
+    color: #15803d;
+
+    font-size: 20px;
+
+    font-weight: 700;
+}
+
+/* =========================================================
+   DICTIONARY IMAGE
+========================================================= */
+
+.dictionary-image-container {
+    margin-top: 16px;
+}
+
+.dictionary-image {
+    display: block;
+
+    width: 100%;
+
+    max-height: 240px;
+
+    object-fit: cover;
+
+    border-radius: 10px;
+
+    background: #eef1f5;
+
+    border: 1px solid #e2e8f0;
+}
+
+/* =========================================================
+   SEARCHED WORD HISTORY
+========================================================= */
+
+.history-section {
+    margin-top: 20px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid #edf0f4;
+}
+
+.history-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.history-header .section-label {
+    margin-bottom: 0;
+}
+
+.clear-history-btn {
+    border: none;
+    background: transparent;
+    color: #ef4444;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.clear-history-btn:hover {
+    background: #fef2f2;
+}
+
+.history-list {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-top: 6px;
+}
+
+.history-word {
+    padding: 6px 10px;
+
+    border: 1px solid #cbd5e1;
+
+    border-radius: 15px;
+
+    background: white;
+
+    color: #334155;
+
+    font-size: 12px;
+
+    cursor: pointer;
+}
+
+.history-word:hover {
+    background: #f1f5f9;
+
+    border-color: #94a3b8;
+}
+
+/* =========================
+   BACK TO HOME BUTTON
+========================= */
+
+.home-button {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: inherit;
+    text-decoration: none;
+
+    font-size: 19px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.home-button:hover {
+    background: rgba(128, 128, 128, 0.12);
+}
+
+.home-button:active {
+    transform: scale(0.92);
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width:600px) {
+
+    .input-row {
+        flex-direction: column;
+    }
+
+    .action-btn {
+        width: 100%;
+    }
+
+    .reader-card {
+        padding: 15px;
+    }
+
+    .article-title {
+        font-size: 22px;
+    }
+
+    .option-bar {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .article-paragraph {
+        font-size: var(--reader-font-size, 16px);
+    }
+
+    .reader-options {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .dictionary-overlay {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .dictionary-modal {
+        width: 100%;
+
+        max-height: 88vh;
+
+        border-radius:
+            16px 16px 0 0;
+    }
+
+    .word-title {
+        font-size: 26px;
+    }
+
+    .pronunciation-box {
+        min-width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+<body class="theme-light">
+
+<div class="app">
+
+<header class="header">
+
+    <div class="logo">
+ Practice<span>Reading</span>
+    </div>
+
+    <div class="header-right">
+
+        <div id="status" class="status">Ready
+        </div>
+
+        <a
+            href="../../index.html"
+            class="home-button"
+            aria-label="Back to Home"
+            title="Back to Home">
+            🏠
+        </a>
+
+        <button
+            id="dictionaryButton"
+            class="dictionary-button"
+            aria-label="Open dictionary"
+            title="Dictionary">
+            🔎
+        </button>
+
+    </div>
+
+</header>
+
+<section class="wiki-controls-card">
+
+    <div class="input-row">
+
+        <input
+            id="wikiInput"
+            class="wiki-input"
+            type="text"
+            placeholder="Enter topic or Wikipedia URL..."
+            autocomplete="off">
+
+        <button
+            id="loadTopicBtn"
+            class="action-btn">
+            Load Topic
+        </button>
+
+        <button
+            id="randomBtn"
+            class="action-btn secondary">
+            🎲 Random
+        </button>
+
+    </div>
+
+    <div class="option-bar">
+
+        <label class="toggle-switch">
+
+            <input
+                type="checkbox"
+                id="simpleWikiToggle">
+
+            <span>
+                Simple English Wiki
+            </span>
+
+        </label>
+
+        <div class="reader-options">
+
+            <div class="font-controls">
+
+                <button
+                    id="fontMinus"
+                    class="font-btn"
+                    title="Decrease text size">
+                    −
+                </button>
+
+                <span
+                    id="fontSizeLabel"
+                    class="font-size-label">
+                    18px
+                </span>
+
+                <button
+                    id="fontPlus"
+                    class="font-btn"
+                    title="Increase text size">
+                    +
+                </button>
+
+            </div>
+
+            <div class="theme-selector">
+
+                <button
+                    class="theme-btn active"
+                    data-theme="light">
+                    Light
+                </button>
+
+                <button
+                    class="theme-btn"
+                    data-theme="sepia">
+                    Sepia
+                </button>
+
+                <button
+                    class="theme-btn"
+                    data-theme="dark">
+                    Dark
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<main
+    id="readerContainer"
+    class="reader-card">
+
+    <div class="loading-block">
+
+        Enter a topic or click
+        <strong>Random</strong>
+        to start reading.
+
+    </div>
+
+</main>
+
+</div>
+
+<div
+    id="dictionaryOverlay"
+    class="dictionary-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true">
+
+    <div
+        id="dictionaryModal"
+        class="dictionary-modal">
+
+        <div class="dictionary-header">
+
+            <input
+                id="dictionaryInput"
+                class="dictionary-search"
+                type="text"
+                autocomplete="off"
+                placeholder="Search an English word...">
+
+            <button
+                id="dictionarySearchButton"
+                class="dictionary-search-button">
+                🔎
+            </button>
+
+            <button
+                id="dictionaryClose"
+                class="dictionary-close">
+                ×
+            </button>
+
+        </div>
+
+        <div
+            id="dictionaryContent"
+            class="dictionary-content">
+
+            <div class="dictionary-loading">
+                Search a word to see its meaning.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+const CONFIG = {
+
+    dictionaryAPI:
+        "https://api.dictionaryapi.dev/api/v2/entries/en",
+
+    datamuseAPI:
+        "https://api.datamuse.com/words",
+
+    translationAPIPrimary:
+        "https://api.mymemory.translated.net/get",
+
+    translationAPISecondary:
+        "https://lingva.ml/api/v1/en/hi/",
+
+    wikimediaAPI:
+        "https://commons.wikimedia.org/w/api.php",
+
+    WORD_STORAGE_KEY:
+        "shadowEnglishSearchedWords",
+
+    FONT_STORAGE_KEY:
+        "shadowEnglishWikiFontSize",
+
+    THEME_STORAGE_KEY:
+        "shadowEnglishWikiTheme",
+
+    SIMPLE_STORAGE_KEY:
+        "shadowEnglishSimpleWiki"
+
+};
+
+
+/* =========================================================
+   UNIFIED LOCAL STORAGE SERVICE
+========================================================= */
+
+const APP_STORAGE_KEYS = {
+
+    shadowing:
+        "shadowing_data",
+
+    reading:
+        "reading_data",
+
+    speaking:
+        "speaking_data"
+
+};
+
+
+function getFromLocal(
+    key,
+    fallback = null
+) {
+
+    try {
+
+        const raw =
+            localStorage.getItem(key);
+
+        if (raw === null) {
+
+            return fallback;
+
+        }
+
+        const parsed =
+            JSON.parse(raw);
+
+        return parsed ?? fallback;
+
+    }
+    catch (error) {
+
+        console.warn(
+            `LocalStorage read failed for "${key}":`,
+            error
+        );
+
+        return fallback;
+
+    }
+
+}
+
+
+function saveToLocal(
+    key,
+    data
+) {
+
+    try {
+
+        localStorage.setItem(
+            key,
+            JSON.stringify(data)
+        );
+
+        return true;
+
+    }
+    catch (error) {
+
+        console.warn(
+            `LocalStorage write failed for "${key}":`,
+            error
+        );
+
+        return false;
+
+    }
+
+}
+
+
+function updateLocalObject(
+    key,
+    updater,
+    fallback = {}
+) {
+
+    const current =
+        getFromLocal(
+            key,
+            fallback
+        );
+
+    try {
+
+        const updated =
+            updater(current);
+
+        saveToLocal(
+            key,
+            updated
+        );
+
+        return updated;
+
+    }
+    catch (error) {
+
+        console.warn(
+            `LocalStorage update failed for "${key}":`,
+            error
+        );
+
+        return current;
+
+    }
+
+}
+
+
+function createStoredEntry(
+    title,
+    url
+) {
+
+    return {
+
+        title:
+            String(title || "").trim(),
+
+        url:
+            String(url || "").trim(),
+
+        timestamp:
+            Date.now()
+
+    };
+
+}
+
+
+/* =========================================================
+   READING MODULE LOCAL STORAGE
+========================================================= */
+
+const READING_STORAGE_KEY =
+    APP_STORAGE_KEYS.reading;
+
+
+function getReadingData() {
+
+    const data =
+        getFromLocal(
+            READING_STORAGE_KEY,
+            {}
+        );
+
+    return {
+
+        randomPages:
+            Array.isArray(data?.randomPages)
+                ? data.randomPages
+                : [],
+
+        searchedTopics:
+            Array.isArray(data?.searchedTopics)
+                ? data.searchedTopics
+                : []
+
+    };
+
+}
+
+
+function saveReadingData(data) {
+
+    return saveToLocal(
+
+        READING_STORAGE_KEY,
+
+        {
+
+            randomPages:
+                Array.isArray(data?.randomPages)
+                    ? data.randomPages
+                    : [],
+
+            searchedTopics:
+                Array.isArray(data?.searchedTopics)
+                    ? data.searchedTopics
+                    : []
+
+        }
+
+    );
+
+}
+
+
+function saveRandomReadingPage(
+    title,
+    url
+) {
+
+    if (!title || !url) {
+
+        return;
+
+    }
+
+    const data =
+        getReadingData();
+
+    const entry =
+        createStoredEntry(
+            title,
+            url
+        );
+
+    const alreadyExists =
+        data.randomPages.some(
+            item =>
+                item &&
+                item.url === entry.url
+        );
+
+    if (alreadyExists) {
+
+        return;
+
+    }
+
+    data.randomPages.push(entry);
+
+    saveReadingData(data);
+
+}
+
+
+function saveSearchedReadingTopic(
+    title,
+    url
+) {
+
+    if (!title || !url) {
+
+        return;
+
+    }
+
+    const data =
+        getReadingData();
+
+    const entry =
+        createStoredEntry(
+            title,
+            url
+        );
+
+    const existingIndex =
+        data.searchedTopics.findIndex(
+            item =>
+                item &&
+                item.url === entry.url
+        );
+
+    if (existingIndex !== -1) {
+
+        data.searchedTopics[
+            existingIndex
+        ] = entry;
+
+    }
+    else {
+
+        data.searchedTopics.push(
+            entry
+        );
+
+    }
+
+    saveReadingData(data);
+
+}
+
+
+/* =========================================================
+   STATE & PERFORMANCE ENGINE
+========================================================= */
+
+let currentArticleTitle = "";
+
+let currentArticleURL = "";
+
+let parsedSections = [];
+
+let currentSectionIndex = 0;
+
+let loadedParagraphs = [];
+
+let isLoadingSection = false;
+
+let currentAudioInstance = null;
+
+let currentPlayingButton = null;
+
+const dictionaryCache =
+    new Map();
+
+let activeAbortController = null;
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const wikiInput =
+    document.getElementById("wikiInput");
+
+const loadTopicBtn =
+    document.getElementById("loadTopicBtn");
+
+const randomBtn =
+    document.getElementById("randomBtn");
+
+const simpleWikiToggle =
+    document.getElementById("simpleWikiToggle");
+
+const readerContainer =
+    document.getElementById("readerContainer");
+
+const statusElement =
+    document.getElementById("status");
+
+const fontMinus =
+    document.getElementById("fontMinus");
+
+const fontPlus =
+    document.getElementById("fontPlus");
+
+const fontSizeLabel =
+    document.getElementById("fontSizeLabel");
+
+const dictionaryButton =
+    document.getElementById("dictionaryButton");
+
+const dictionaryOverlay =
+    document.getElementById("dictionaryOverlay");
+
+const dictionaryInput =
+    document.getElementById("dictionaryInput");
+
+const dictionarySearchButton =
+    document.getElementById("dictionarySearchButton");
+
+const dictionaryClose =
+    document.getElementById("dictionaryClose");
+
+const dictionaryContent =
+    document.getElementById("dictionaryContent");
+
+
+/* =========================================================
+   WIKIPEDIA DOMAIN
+========================================================= */
+
+function getWikiDomain() {
+
+    return simpleWikiToggle.checked
+        ? "simple.wikipedia.org"
+        : "en.wikipedia.org";
+
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+function setStatus(message) {
+
+    statusElement.textContent =
+        message;
+
+}
+
+
+/* =========================================================
+   SAFE HTML
+========================================================= */
+
+function escapeHTML(value) {
+
+    return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
+}
+
+
+/* =========================================================
+   RANDOM ARTICLE
+========================================================= */
+
+async function fetchRandomArticle() {
+
+    try {
+
+        setStatus(
+            "Finding random article..."
+        );
+
+        showLoading(
+            "Finding a random article..."
+        );
+
+        randomBtn.disabled =
+            true;
+
+        const domain =
+            getWikiDomain();
+
+        const randomUrl =
+            `https://${domain}/w/api.php` +
+            `?action=query` +
+            `&list=random` +
+            `&rnnamespace=0` +
+            `&rnlimit=1` +
+            `&format=json` +
+            `&origin=*`;
+
+        const response =
+            await fetch(randomUrl);
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Random article API request failed"
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        const randomPage =
+            data?.query?.random?.[0];
+
+        if (
+            !randomPage ||
+            !randomPage.title
+        ) {
+
+            throw new Error(
+                "No article title returned"
+            );
+
+        }
+
+        const articleTitle =
+            randomPage.title;
+
+        wikiInput.value =
+            articleTitle;
+
+        /*
+         * NEW:
+         * Save generated random Wikipedia
+         * page immediately.
+         */
+
+        const articleURL =
+            `https://${domain}/wiki/` +
+            encodeURIComponent(
+                articleTitle.replace(
+                    / /g,
+                    "_"
+                )
+            );
+
+        saveRandomReadingPage(
+            articleTitle,
+            articleURL
+        );
+
+        await initializeArticle(
+            articleTitle
+        );
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showError(
+            "Could not load a random article. Please try again."
+        );
+
+        setStatus(
+            "Article Error"
+        );
+
+    }
+    finally {
+
+        randomBtn.disabled =
+            false;
+
+    }
+
+}
+
+
+/* =========================================================
+   URL / TOPIC RESOLUTION
+========================================================= */
+
+function extractWikipediaTitle(input) {
+
+    let value =
+        input.trim();
+
+    if (!value) return "";
+
+    try {
+
+        const url =
+            new URL(value);
+
+        if (
+            url.hostname.endsWith(
+                "wikipedia.org"
+            ) &&
+            url.pathname.startsWith(
+                "/wiki/"
+            )
+        ) {
+
+            let title =
+                url.pathname.substring(
+                    "/wiki/".length
+                );
+
+            return decodeURIComponent(title)
+                .replace(/_/g, " ");
+
+        }
+
+    }
+    catch (_) {
+
+        /* Not a URL */
+
+    }
+
+    const match =
+        value.match(
+            /wikipedia\.org\/wiki\/([^#?]+)/i
+        );
+
+    if (match) {
+
+        return decodeURIComponent(
+            match[1]
+        ).replace(
+            /_/g,
+            " "
+        );
+
+    }
+
+    return value;
+
+}
+
+
+/* =========================================================
+   SEARCH WIKIPEDIA FOR TOPIC
+========================================================= */
+
+async function searchWikipediaTitle(
+    query
+) {
+
+    const domain =
+        getWikiDomain();
+
+    const endpoint =
+        `https://${domain}/w/api.php` +
+        `?action=query` +
+        `&list=search` +
+        `&srsearch=${encodeURIComponent(query)}` +
+        `&srlimit=1` +
+        `&format=json` +
+        `&origin=*`;
+
+    const response =
+        await fetch(endpoint);
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Wikipedia search failed"
+        );
+
+    }
+
+    const data =
+        await response.json();
+
+    const result =
+        data?.query?.search?.[0];
+
+    if (!result) {
+
+        throw new Error(
+            `No Wikipedia article found for "${query}"`
+        );
+
+    }
+
+    return result.title;
+
+}
+
+
+/* =========================================================
+   LOAD TOPIC
+========================================================= */
+
+async function fetchTopicArticle(
+    input
+) {
+
+    const rawInput =
+        input.trim();
+
+    if (!rawInput) return;
+
+    try {
+
+        setStatus(
+            "Searching Wikipedia..."
+        );
+
+        showLoading(
+            "Finding the article..."
+        );
+
+        let title =
+            extractWikipediaTitle(
+                rawInput
+            );
+
+        const looksLikeWikipediaURL =
+            /wikipedia\.org\/wiki\//i.test(
+                rawInput
+            );
+
+        if (!looksLikeWikipediaURL) {
+
+            title =
+                await searchWikipediaTitle(
+                    title
+                );
+
+        }
+
+        wikiInput.value =
+            title;
+
+        /*
+         * NEW:
+         * Save resolved searched topic
+         * immediately.
+         */
+
+        const domain =
+            getWikiDomain();
+
+        const articleURL =
+            `https://${domain}/wiki/` +
+            encodeURIComponent(
+                title.replace(
+                    / /g,
+                    "_"
+                )
+            );
+
+        saveSearchedReadingTopic(
+            title,
+            articleURL
+        );
+
+        await initializeArticle(
+            title
+        );
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showError(
+            error.message ||
+            "Could not find this Wikipedia article."
+        );
+
+        setStatus(
+            "Search Error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FULL ARTICLE PARSER
+========================================================= */
+
+function parseFullArticleHTML(
+    rawHTML
+) {
+
+    const parser =
+        new DOMParser();
+
+    const doc =
+        parser.parseFromString(
+            rawHTML,
+            "text/html"
+        );
+
+    doc.querySelectorAll(
+        [
+            "table",
+            ".infobox",
+            ".navbox",
+            ".vertical-navbox",
+            ".metadata",
+            ".reference",
+            ".reflist",
+            ".mw-editsection",
+            ".thumb",
+            ".gallery",
+            "figure",
+            "style",
+            "script",
+            "sup",
+            ".mw-references-wrap",
+            ".citation",
+            ".shortdescription",
+            "#see_also",
+            "#references",
+            "#external_links"
+        ].join(",")
+    ).forEach(
+        element =>
+            element.remove()
+    );
+
+    const contentDiv =
+        doc.querySelector(
+            ".mw-parser-output"
+        ) || doc.body;
+
+    const sections = [];
+
+    let currentHeading =
+        "Introduction";
+
+    let currentParagraphs = [];
+
+    Array.from(
+        contentDiv.children
+    ).forEach(
+        child => {
+
+            const tagName =
+                child.tagName.toLowerCase();
+
+            if (
+                /^h[1-6]$/.test(
+                    tagName
+                )
+            ) {
+
+                const headingText =
+                    child.textContent
+                        .replace(
+                            /\[edit\]/gi,
+                            ""
+                        )
+                        .trim();
+
+                if (
+                    /^(see also|references|external links|notes|further reading)$/i
+                        .test(
+                            headingText
+                        )
+                ) {
+
+                    return;
+
+                }
+
+                if (
+                    currentParagraphs.length > 0
+                ) {
+
+                    sections.push({
+
+                        line:
+                            currentHeading,
+
+                        paragraphs:
+                            currentParagraphs
+
+                    });
+
+                    currentParagraphs =
+                        [];
+
+                }
+
+                currentHeading =
+                    headingText;
+
+            }
+            else if (
+                tagName === "p" ||
+                tagName === "blockquote"
+            ) {
+
+                const text =
+                    child.textContent
+                        .replace(
+                            /\s+/g,
+                            " "
+                        )
+                        .trim();
+
+                if (
+                    text.length > 15
+                ) {
+
+                    currentParagraphs.push(
+                        text
+                    );
+
+                }
+
+            }
+
+        }
+    );
+
+    if (
+        currentParagraphs.length > 0
+    ) {
+
+        sections.push({
+
+            line:
+                currentHeading,
+
+            paragraphs:
+                currentParagraphs
+
+        });
+
+    }
+
+    return sections;
+
+}
+
+
+/* =========================================================
+   ARTICLE INITIALIZATION
+========================================================= */
+
+async function initializeArticle(
+    title
+) {
+
+    if (!title) return;
+
+    try {
+
+        setStatus(
+            "Loading article content..."
+        );
+
+        showLoading(
+            `Fetching "${escapeHTML(title)}"...`
+        );
+
+        currentArticleTitle =
+            title;
+
+        parsedSections =
+            [];
+
+        currentSectionIndex =
+            0;
+
+        loadedParagraphs =
+            [];
+
+        const domain =
+            getWikiDomain();
+
+        const endpoint =
+            `https://${domain}/w/api.php` +
+            `?action=parse` +
+            `&page=${encodeURIComponent(title)}` +
+            `&prop=text|title` +
+            `&format=json` +
+            `&origin=*`;
+
+        const response =
+            await fetch(endpoint);
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Wikipedia network request failed."
+            );
+
+        }
+
+        const data =
+            await response.json();
+
+        if (
+            data.error ||
+            !data.parse ||
+            !data.parse.text
+        ) {
+
+            throw new Error(
+                "Wikipedia article content was not found."
+            );
+
+        }
+
+        currentArticleTitle =
+            data.parse.title;
+
+        currentArticleURL =
+            `https://${domain}/wiki/` +
+            encodeURIComponent(
+                currentArticleTitle.replace(
+                    / /g,
+                    "_"
+                )
+            );
+
+        parsedSections =
+            parseFullArticleHTML(
+                data.parse.text["*"]
+            );
+
+        readerContainer.innerHTML =
+            "";
+
+        const titleElement =
+            document.createElement(
+                "h1"
+            );
+
+        titleElement.className =
+            "article-title";
+
+        titleElement.textContent =
+            currentArticleTitle;
+
+        readerContainer.appendChild(
+            titleElement
+        );
+
+        const sourceElement =
+            document.createElement(
+                "div"
+            );
+
+        sourceElement.className =
+            "article-source";
+
+        sourceElement.innerHTML =
+            `Wikipedia · ${escapeHTML(domain)}`;
+
+        readerContainer.appendChild(
+            sourceElement
+        );
+
+        if (
+            parsedSections.length === 0
+        ) {
+
+            showError(
+                "No readable text found for this article."
+            );
+
+            setStatus(
+                "Article Empty"
+            );
+
+            return;
+
+        }
+
+        await renderNextSection();
+
+        setStatus(
+            "Article Ready"
+        );
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showError(
+            "Could not load this article. " +
+            "Try another topic or switch Simple English Wiki."
+        );
+
+        setStatus(
+            "Article Error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER NEXT SECTION
+========================================================= */
+
+async function renderNextSection() {
+
+    if (isLoadingSection)
+        return;
+
+    if (
+        currentSectionIndex >=
+        parsedSections.length
+    ) {
+
+        renderCompletion();
+
+        return;
+
+    }
+
+    isLoadingSection =
+        true;
+
+    updateLoadMoreButton(
+        true
+    );
+
+    const section =
+        parsedSections[
+            currentSectionIndex
+        ];
+
+    try {
+
+        setStatus(
+            `Rendering ${section.line}...`
+        );
+
+        const sectionElement =
+            document.createElement(
+                "section"
+            );
+
+        sectionElement.className =
+            "article-section";
+
+        if (
+            currentSectionIndex !== 0
+        ) {
+
+            const heading =
+                document.createElement(
+                    "h2"
+                );
+
+            heading.className =
+                "section-heading";
+
+            heading.textContent =
+                section.line;
+
+            sectionElement.appendChild(
+                heading
+            );
+
+        }
+
+        section.paragraphs.forEach(
+            paragraphText => {
+
+                const paragraph =
+                    createParagraph(
+                        paragraphText
+                    );
+
+                sectionElement.appendChild(
+                    paragraph
+                );
+
+                loadedParagraphs.push(
+                    paragraph
+                );
+
+            }
+        );
+
+        const loadMoreContainer =
+            document.getElementById(
+                "loadMoreChunkContainer"
+            );
+
+        if (loadMoreContainer) {
+
+            readerContainer.insertBefore(
+                sectionElement,
+                loadMoreContainer
+            );
+
+        }
+        else {
+
+            readerContainer.appendChild(
+                sectionElement
+            );
+
+        }
+
+        currentSectionIndex++;
+
+        setStatus(
+            `Loaded: ${section.line}`
+        );
+
+        createOrUpdateLoadMore();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        currentSectionIndex++;
+
+        createOrUpdateLoadMore();
+
+    }
+    finally {
+
+        isLoadingSection =
+            false;
+
+        updateLoadMoreButton(
+            false
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CREATE INTERACTIVE PARAGRAPH
+========================================================= */
+
+function createParagraph(text) {
+
+    const paragraph =
+        document.createElement(
+            "div"
+        );
+
+    paragraph.className =
+        "article-paragraph";
+
+    const ttsButton =
+        document.createElement(
+            "button"
+        );
+
+    ttsButton.className =
+        "tts-para-btn";
+
+    ttsButton.textContent =
+        "🔊 Read";
+
+    ttsButton.title =
+        "Read this paragraph aloud";
+
+    ttsButton.addEventListener(
+        "click",
+        event => {
+
+            event.stopPropagation();
+
+            speakParagraphText(
+                text,
+                ttsButton
+            );
+
+        }
+    );
+
+    paragraph.appendChild(
+        ttsButton
+    );
+
+    const tokens =
+        text.split(
+            /(\s+)/
+        );
+
+    tokens.forEach(
+        token => {
+
+            if (!token.trim()) {
+
+                paragraph.appendChild(
+                    document.createTextNode(
+                        token
+                    )
+                );
+
+                return;
+
+            }
+
+            const span =
+                document.createElement(
+                    "span"
+                );
+
+            span.className =
+                "reader-word";
+
+            span.textContent =
+                token;
+
+            span.addEventListener(
+                "click",
+                event => {
+
+                    event.stopPropagation();
+
+                    const word =
+                        cleanSearchWord(
+                            token
+                        );
+
+                    if (word) {
+
+                        openDictionary(
+                            word,
+                            text
+                        );
+
+                    }
+
+                }
+            );
+
+            paragraph.appendChild(
+                span
+            );
+
+        }
+    );
+
+    paragraph.addEventListener(
+        "click",
+        () => {
+
+            document
+                .querySelectorAll(
+                    ".article-paragraph.active-focus"
+                )
+                .forEach(
+                    element => {
+
+                        element.classList.remove(
+                            "active-focus"
+                        );
+
+                    }
+                );
+
+            paragraph.classList.add(
+                "active-focus"
+            );
+
+        }
+    );
+
+    return paragraph;
+
+}
+
+
+/* =========================================================
+   LOAD MORE BUTTON
+========================================================= */
+
+function createOrUpdateLoadMore() {
+
+    let container =
+        document.getElementById(
+            "loadMoreChunkContainer"
+        );
+
+    if (!container) {
+
+        container =
+            document.createElement(
+                "div"
+            );
+
+        container.id =
+            "loadMoreChunkContainer";
+
+        container.className =
+            "load-more-container";
+
+        readerContainer.appendChild(
+            container
+        );
+
+    }
+
+    if (
+        currentSectionIndex >=
+        parsedSections.length
+    ) {
+
+        renderCompletion();
+
+        return;
+
+    }
+
+    container.innerHTML = `
+
+        <button
+            id="loadMoreBtn"
+            class="load-more-btn">
+
+            ⏬ Load More Content
+
+        </button>
+
+    `;
+
+    document
+        .getElementById(
+            "loadMoreBtn"
+        )
+        .addEventListener(
+            "click",
+            renderNextSection
+        );
+
+}
+
+
+function updateLoadMoreButton(
+    loading
+) {
+
+    const button =
+        document.getElementById(
+            "loadMoreBtn"
+        );
+
+    if (!button) return;
+
+    button.disabled =
+        loading;
+
+    button.textContent =
+        loading
+            ? "Loading Section..."
+            : "⏬ Load More Content";
+
+}
+
+
+/* =========================================================
+   ARTICLE COMPLETE
+========================================================= */
+
+function renderCompletion() {
+
+    let container =
+        document.getElementById(
+            "loadMoreChunkContainer"
+        );
+
+    if (!container) {
+
+        container =
+            document.createElement(
+                "div"
+            );
+
+        container.id =
+            "loadMoreChunkContainer";
+
+        container.className =
+            "load-more-container";
+
+        readerContainer.appendChild(
+            container
+        );
+
+    }
+
+    container.innerHTML = `
+
+        <div class="complete-message">
+
+            ✓ Article Complete · End of Topic
+
+        </div>
+
+    `;
+
+    setStatus(
+        "Article Complete"
+    );
+
+}
+
+
+/* =========================================================
+   TEXT TO SPEECH
+========================================================= */
+
+function speakParagraphText(
+    text,
+    button
+) {
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
+
+        return;
+
+    }
+
+    if (
+        window.speechSynthesis.speaking
+    ) {
+
+        window.speechSynthesis.cancel();
+
+        button.textContent =
+            "🔊 Read";
+
+        return;
+
+    }
+
+    const utterance =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+    utterance.lang =
+        "en-US";
+
+    utterance.rate =
+        .9;
+
+    button.textContent =
+        "⏹️ Stop";
+
+    utterance.onend =
+        () => {
+
+            button.textContent =
+                "🔊 Read";
+
+        };
+
+    utterance.onerror =
+        () => {
+
+            button.textContent =
+                "🔊 Read";
+
+        };
+
+    window.speechSynthesis.speak(
+        utterance
+    );
+
+}
+
+
+/* =========================================================
+   FONT SIZE
+========================================================= */
+
+let readerFontSize =
+    Number(
+        localStorage.getItem(
+            CONFIG.FONT_STORAGE_KEY
+        )
+    ) || 18;
+
+readerFontSize =
+    Math.max(
+        14,
+        Math.min(
+            28,
+            readerFontSize
+        )
+    );
+
+
+function applyFontSize() {
+
+    document.documentElement.style
+        .setProperty(
+            "--reader-font-size",
+            `${readerFontSize}px`
+        );
+
+    fontSizeLabel.textContent =
+        `${readerFontSize}px`;
+
+    localStorage.setItem(
+        CONFIG.FONT_STORAGE_KEY,
+        readerFontSize
+    );
+
+}
+
+
+fontMinus.addEventListener(
+    "click",
+    () => {
+
+        readerFontSize =
+            Math.max(
+                14,
+                readerFontSize - 1
+            );
+
+        applyFontSize();
+
+    }
+);
+
+
+fontPlus.addEventListener(
+    "click",
+    () => {
+
+        readerFontSize =
+            Math.min(
+                28,
+                readerFontSize + 1
+            );
+
+        applyFontSize();
+
+    }
+);
+
+
+applyFontSize();
+
+
+/* =========================================================
+   THEME
+========================================================= */
+
+function setReaderTheme(
+    theme
+) {
+
+    document.body.classList.remove(
+        "theme-light",
+        "theme-sepia",
+        "theme-dark"
+    );
+
+    document.body.classList.add(
+        `theme-${theme}`
+    );
+
+    document
+        .querySelectorAll(
+            ".theme-btn"
+        )
+        .forEach(
+            button => {
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.theme === theme
+                );
+
+            }
+        );
+
+    localStorage.setItem(
+        CONFIG.THEME_STORAGE_KEY,
+        theme
+    );
+
+}
+
+
+document
+    .querySelectorAll(
+        ".theme-btn"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    setReaderTheme(
+                        button.dataset.theme
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+const savedTheme =
+    localStorage.getItem(
+        CONFIG.THEME_STORAGE_KEY
+    ) || "light";
+
+
+setReaderTheme(
+    savedTheme
+);
+
+
+/* =========================================================
+   SIMPLE WIKIPEDIA PREFERENCE
+========================================================= */
+
+const savedSimple =
+    localStorage.getItem(
+        CONFIG.SIMPLE_STORAGE_KEY
+    ) === "true";
+
+simpleWikiToggle.checked =
+    savedSimple;
+
+
+simpleWikiToggle.addEventListener(
+    "change",
+    () => {
+
+        localStorage.setItem(
+            CONFIG.SIMPLE_STORAGE_KEY,
+            simpleWikiToggle.checked
+        );
+
+    }
+);
+
+
+/* =========================================================
+   DICTIONARY — OPEN
+========================================================= */
+
+function openDictionary(
+    word = "",
+    context = ""
+) {
+
+    if (
+        "speechSynthesis" in window
+    ) {
+
+        window.speechSynthesis.cancel();
+
+    }
+
+    document.body.style.overflow =
+        "hidden";
+
+    dictionaryOverlay.classList.add(
+        "open"
+    );
+
+    dictionaryOverlay.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    dictionaryInput.value =
+        word;
+
+    setTimeout(
+        () => {
+
+            dictionaryInput.focus();
+
+            dictionaryInput.select();
+
+        },
+        50
+    );
+
+    if (word) {
+
+        searchDictionary(
+            word,
+            context
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CLOSE DICTIONARY
+========================================================= */
+
+function closeDictionary() {
+
+    stopAllAudioPlayback();
+
+    document.body.style.overflow =
+        "";
+
+    dictionaryOverlay.classList.remove(
+        "open"
+    );
+
+    dictionaryOverlay.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+}
+
+
+/* =========================================================
+   SYLLABLE BREAKDOWN
+========================================================= */
+
+function getGoogleStyleSyllables(
+    word
+) {
+
+    word =
+        word.toLowerCase().trim();
+
+    if (word.length <= 3)
+        return word;
+
+    const vowelGroups =
+        word.match(
+            /[^aeiouy]*[aeiouy]+(?:[^aeiouy]*$|[^aeiouy](?=[^aeiouy]))?/gi
+        );
+
+    if (
+        !vowelGroups ||
+        vowelGroups.length <= 1
+    ) {
+
+        return word;
+
+    }
+
+    const syllables = [];
+
+    let current = "";
+
+    for (
+        let i = 0;
+        i < word.length;
+        i++
+    ) {
+
+        current += word[i];
+
+        const isVowel =
+            /[aeiouy]/.test(
+                word[i]
+            );
+
+        const nextIsVowel =
+            i + 1 < word.length &&
+            /[aeiouy]/.test(
+                word[i + 1]
+            );
+
+        const secondIsVowel =
+            i + 2 < word.length &&
+            /[aeiouy]/.test(
+                word[i + 2]
+            );
+
+        if (
+            isVowel &&
+            !nextIsVowel &&
+            secondIsVowel &&
+            i < word.length - 2
+        ) {
+
+            syllables.push(
+                current
+            );
+
+            current = "";
+
+        }
+        else if (
+            !isVowel &&
+            !nextIsVowel &&
+            secondIsVowel &&
+            i < word.length - 2
+        ) {
+
+            syllables.push(
+                current
+            );
+
+            current = "";
+
+        }
+
+    }
+
+    if (current) {
+
+        syllables.push(
+            current
+        );
+
+    }
+
+    return syllables.join("·");
+
+}
+
+
+/* =========================================================
+   DICTIONARY ENGINE
+========================================================= */
+
+async function searchDictionary(
+    inputWord,
+    context = ""
+) {
+
+    const cleanWord =
+        cleanSearchWord(
+            inputWord
+        ).toLowerCase();
+
+    if (!cleanWord) return;
+
+    stopAllAudioPlayback();
+
+    saveSearchedWord(
+        cleanWord
+    );
+
+    if (activeAbortController) {
+
+        activeAbortController.abort();
+
+    }
+
+    activeAbortController =
+        new AbortController();
+
+    const signal =
+        activeAbortController.signal;
+
+    const cacheKey =
+        context
+            ? `${cleanWord}_${context.slice(0, 30)}`
+            : cleanWord;
+
+    if (
+        dictionaryCache.has(
+            cacheKey
+        )
+    ) {
+
+        const cachedData =
+            dictionaryCache.get(
+                cacheKey
+            );
+
+        renderInitialDictionarySkeleton(
+            cleanWord
+        );
+
+        updatePronunciationsAndDefinitions(
+            cleanWord,
+            cachedData.primaryData,
+            cachedData.datamuseData
+        );
+
+        updateHindiSection(
+            cachedData.hindiTranslation
+        );
+
+        updateImageSection(
+            cleanWord,
+            cachedData.imageUrl
+        );
+
+        return;
+
+    }
+
+    renderInitialDictionarySkeleton(
+        cleanWord
+    );
+
+    const primaryPromise =
+        fetch(
+            `${CONFIG.dictionaryAPI}/${encodeURIComponent(cleanWord)}`,
+            { signal }
+        )
+        .then(
+            res =>
+                res.ok
+                    ? res.json()
+                    : null
+        )
+        .catch(
+            () => null
+        );
+
+    const datamusePromise =
+        fetch(
+            `${CONFIG.datamuseAPI}?sp=${encodeURIComponent(cleanWord)}&md=d&ipa=1`,
+            { signal }
+        )
+        .then(
+            res =>
+                res.ok
+                    ? res.json()
+                    : null
+        )
+        .catch(
+            () => null
+        );
+
+    const hindiPromise =
+        fetchHindiTranslation(
+            cleanWord,
+            context,
+            signal
+        );
+
+    const imagePromise =
+        fetchWikimediaImage(
+            cleanWord,
+            signal
+        );
+
+    Promise.allSettled(
+        [
+            primaryPromise,
+            datamusePromise
+        ]
+    ).then(
+        ([primaryRes, datamuseRes]) => {
+
+            if (signal.aborted)
+                return;
+
+            const primaryData =
+                primaryRes.status ===
+                "fulfilled"
+                    ? primaryRes.value
+                    : null;
+
+            const datamuseData =
+                datamuseRes.status ===
+                "fulfilled"
+                    ? datamuseRes.value
+                    : null;
+
+            updatePronunciationsAndDefinitions(
+                cleanWord,
+                primaryData,
+                datamuseData
+            );
+
+        }
+    );
+
+    hindiPromise.then(
+        hindiTranslation => {
+
+            if (signal.aborted)
+                return;
+
+            updateHindiSection(
+                hindiTranslation
+            );
+
+        }
+    );
+
+    imagePromise.then(
+        imageUrl => {
+
+            if (signal.aborted)
+                return;
+
+            updateImageSection(
+                cleanWord,
+                imageUrl
+            );
+
+        }
+    );
+
+    try {
+
+        const [
+            primaryData,
+            datamuseData,
+            hindiTranslation,
+            imageUrl
+        ] =
+            await Promise.all(
+                [
+                    primaryPromise,
+                    datamusePromise,
+                    hindiPromise,
+                    imagePromise
+                ]
+            );
+
+        if (!signal.aborted) {
+
+            dictionaryCache.set(
+                cacheKey,
+                {
+                    primaryData,
+                    datamuseData,
+                    hindiTranslation,
+                    imageUrl
+                }
+            );
+
+        }
+
+    }
+    catch (e) {
+
+        /* Ignore aborted fetch errors */
+
+    }
+
+}
+
+
+/* =========================================================
+   INITIAL DICTIONARY SKELETON
+========================================================= */
+
+function renderInitialDictionarySkeleton(
+    word
+) {
+
+    const syllables =
+        getGoogleStyleSyllables(
+            word
+        );
+
+    dictionaryContent.innerHTML = `
+
+        <div class="word-heading">
+
+            <div>
+
+                <h2 class="word-title">
+                    ${escapeHTML(word)}
+                </h2>
+
+                <div class="word-syllables">
+                    ${escapeHTML(syllables)}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div
+            id="pronunciationSection"
+            class="pronunciation-card">
+
+            <div class="pronunciation-box">
+
+                <div class="pronunciation-info">
+
+                    <span class="pronunciation-label">
+                        American (US)
+                    </span>
+
+                    <span class="pronunciation-value">
+                        <span class="spinner-inline"></span>
+                        Loading...
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="pronunciation-box">
+
+                <div class="pronunciation-info">
+
+                    <span class="pronunciation-label">
+                        British (UK)
+                    </span>
+
+                    <span class="pronunciation-value">
+                        <span class="spinner-inline"></span>
+                        Loading...
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="hindiSection">
+
+            <div class="hindi-box">
+
+                <div class="section-label">
+                    Hindi Meaning
+                </div>
+
+                <div class="section-loading-inline">
+                    <span class="spinner-inline"></span>
+                    Translating...
+                </div>
+
+            </div>
+
+        </div>
+
+        <div
+            id="meaningSection"
+            class="meaning-section">
+
+            <div class="section-label">
+                English Definitions
+            </div>
+
+            <div class="section-loading-inline">
+                <span class="spinner-inline"></span>
+                Fetching definitions...
+            </div>
+
+        </div>
+
+        <div id="imageSection"></div>
+
+        ${renderSearchHistory()}
+
+    `;
+
+}
+
+
+/* =========================================================
+   UPDATE PRONUNCIATION & DEFINITIONS
+========================================================= */
+
+function updatePronunciationsAndDefinitions(
+    word,
+    primaryData,
+    datamuseData
+) {
+
+    const pronContainer =
+        document.getElementById(
+            "pronunciationSection"
+        );
+
+    const meaningContainer =
+        document.getElementById(
+            "meaningSection"
+        );
+
+    let usPhonetic = "";
+
+    let ukPhonetic = "";
+
+    let usAudio = "";
+
+    let ukAudio = "";
+
+    let meanings = [];
+
+    if (
+        primaryData &&
+        Array.isArray(primaryData) &&
+        primaryData.length > 0
+    ) {
+
+        const entry =
+            primaryData[0];
+
+        if (
+            entry.phonetics &&
+            Array.isArray(
+                entry.phonetics
+            )
+        ) {
+
+            entry.phonetics.forEach(
+                p => {
+
+                    if (p.audio) {
+
+                        if (
+                            p.audio.includes("-us.") ||
+                            p.audio.includes("-us-")
+                        ) {
+
+                            usAudio =
+                                p.audio;
+
+                            if (p.text)
+                                usPhonetic =
+                                    p.text;
+
+                        }
+                        else if (
+                            p.audio.includes("-uk.") ||
+                            p.audio.includes("-uk-")
+                        ) {
+
+                            ukAudio =
+                                p.audio;
+
+                            if (p.text)
+                                ukPhonetic =
+                                    p.text;
+
+                        }
+                        else if (!usAudio) {
+
+                            usAudio =
+                                p.audio;
+
+                            if (p.text)
+                                usPhonetic =
+                                    p.text;
+
+                        }
+
+                    }
+                    else if (p.text) {
+
+                        if (!usPhonetic)
+                            usPhonetic =
+                                p.text;
+
+                    }
+
+                }
+            );
+
+        }
+
+        if (
+            entry.phonetic &&
+            !usPhonetic
+        ) {
+
+            usPhonetic =
+                entry.phonetic;
+
+        }
+
+        if (
+            entry.meanings &&
+            Array.isArray(
+                entry.meanings
+            )
+        ) {
+
+            entry.meanings.forEach(
+                m => {
+
+                    if (
+                        m.definitions &&
+                        m.definitions.length > 0
+                    ) {
+
+                        m.definitions
+                            .slice(0, 3)
+                            .forEach(
+                                def => {
+
+                                    meanings.push({
+
+                                        partOfSpeech:
+                                            m.partOfSpeech ||
+                                            "general",
+
+                                        definition:
+                                            def.definition,
+
+                                        example:
+                                            def.example ||
+                                            null
+
+                                    });
+
+                                }
+                            );
+
+                    }
+
+                }
+            );
+
+        }
+
+    }
+
+    if (
+        datamuseData &&
+        Array.isArray(datamuseData) &&
+        datamuseData.length > 0
+    ) {
+
+        const dm =
+            datamuseData[0];
+
+        if (
+            (!usPhonetic &&
+             !ukPhonetic) &&
+            dm.tags
+        ) {
+
+            const ipaTag =
+                dm.tags.find(
+                    t =>
+                        t.startsWith(
+                            "ipa_pron:"
+                        )
+                );
+
+            if (ipaTag) {
+
+                usPhonetic =
+                    `/${ipaTag.replace(
+                        "ipa_pron:",
+                        ""
+                    )}/`;
+
+            }
+
+        }
+
+        if (
+            meanings.length === 0 &&
+            dm.defs &&
+            Array.isArray(
+                dm.defs
+            )
+        ) {
+
+            dm.defs
+                .slice(0, 4)
+                .forEach(
+                    defStr => {
+
+                        const parts =
+                            defStr.split(
+                                "\t"
+                            );
+
+                        if (
+                            parts.length >= 2
+                        ) {
+
+                            meanings.push({
+
+                                partOfSpeech:
+                                    parts[0] ||
+                                    "general",
+
+                                definition:
+                                    parts[1],
+
+                                example:
+                                    null
+
+                            });
+
+                        }
+                        else {
+
+                            meanings.push({
+
+                                partOfSpeech:
+                                    "general",
+
+                                definition:
+                                    defStr,
+
+                                example:
+                                    null
+
+                            });
+
+                        }
+
+                    }
+                );
+
+        }
+
+    }
+
+    if (
+        !usPhonetic &&
+        !ukPhonetic
+    ) {
+
+        usPhonetic =
+            `/${word}/`;
+
+    }
+
+    const finalUsPhonetic =
+        usPhonetic ||
+        ukPhonetic;
+
+    const finalUkPhonetic =
+        ukPhonetic ||
+        usPhonetic;
+
+    if (pronContainer) {
+
+        pronContainer.innerHTML = `
+
+            <div class="pronunciation-box">
+
+                <div class="pronunciation-info">
+
+                    <span class="pronunciation-label">
+                        American (US)
+                    </span>
+
+                    <span class="pronunciation-value">
+                        ${escapeHTML(finalUsPhonetic)}
+                    </span>
+
+                </div>
+
+                <button
+                    class="audio-button"
+                    onclick="playDictionaryAudio('${escapeHTML(usAudio)}', '${escapeHTML(word)}', 'en-US', this)">
+
+                    🔊 Listen
+
+                </button>
+
+            </div>
+
+            <div class="pronunciation-box">
+
+                <div class="pronunciation-info">
+
+                    <span class="pronunciation-label">
+                        British (UK)
+                    </span>
+
+                    <span class="pronunciation-value">
+                        ${escapeHTML(finalUkPhonetic)}
+                    </span>
+
+                </div>
+
+                <button
+                    class="audio-button"
+                    onclick="playDictionaryAudio('${escapeHTML(ukAudio)}', '${escapeHTML(word)}', 'en-GB', this)">
+
+                    🔊 Listen
+
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+    if (meaningContainer) {
+
+        const meaningsHTML =
+            meanings.length > 0
+
+                ?
+
+                meanings.map(
+                    m => `
+
+                        <div class="meaning-item">
+
+                            <span class="meaning-part">
+                                ${escapeHTML(
+                                    m.partOfSpeech
+                                )}
+                            </span>
+
+                            <span class="meaning-text">
+                                ${escapeHTML(
+                                    m.definition
+                                )}
+                            </span>
+
+                            ${
+                                m.example
+                                    ? `
+                                    <div class="meaning-example">
+                                        "${escapeHTML(
+                                            m.example
+                                        )}"
+                                    </div>
+                                    `
+                                    : ""
+                            }
+
+                        </div>
+
+                    `
+                ).join("")
+
+                :
+
+                `
+                <div class="meaning-item">
+                    <span class="meaning-text">
+                        No detailed definitions found.
+                    </span>
+                </div>
+                `;
+
+        meaningContainer.innerHTML = `
+
+            <div class="section-label">
+                English Definitions
+            </div>
+
+            ${meaningsHTML}
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE HINDI SECTION
+========================================================= */
+
+function updateHindiSection(
+    hindiTranslation
+) {
+
+    const container =
+        document.getElementById(
+            "hindiSection"
+        );
+
+    if (!container) return;
+
+    if (hindiTranslation) {
+
+        container.innerHTML = `
+
+            <div class="hindi-box">
+
+                <div class="section-label">
+                    Hindi Meaning
+                </div>
+
+                <div class="hindi-word">
+                    ${escapeHTML(
+                        hindiTranslation
+                    )}
+                </div>
+
+            </div>
+
+        `;
+
+    }
+    else {
+
+        container.innerHTML =
+            "";
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE IMAGE SECTION
+========================================================= */
+
+function updateImageSection(
+    word,
+    imageUrl
+) {
+
+    const container =
+        document.getElementById(
+            "imageSection"
+        );
+
+    if (!container) return;
+
+    if (imageUrl) {
+
+        container.innerHTML = `
+
+            <div class="dictionary-image-container">
+
+                <img
+                    class="dictionary-image"
+                    src="${escapeHTML(imageUrl)}"
+                    alt="${escapeHTML(word)}"
+                    loading="lazy">
+
+            </div>
+
+        `;
+
+    }
+    else {
+
+        container.innerHTML =
+            "";
+
+    }
+
+}
+
+
+/* =========================================================
+   CLEAN HINDI RESPONSE TEXT
+========================================================= */
+
+function sanitizeHindiTranslation(
+    text
+) {
+
+    if (!text) return "";
+
+    let cleaned =
+        text
+            .replace(
+                /["“'”]/g,
+                ""
+            )
+            .replace(
+                /RND/gi,
+                ""
+            )
+            .replace(
+                /KTurtle/gi,
+                ""
+            )
+            .replace(
+                /This is an EXAMPLE NAME.*/gi,
+                ""
+            )
+            .replace(
+                /Please see http.*/gi,
+                ""
+            )
+            .trim();
+
+    return cleaned;
+
+}
+
+
+/* =========================================================
+   HINDI TRANSLATION
+========================================================= */
+
+async function fetchHindiTranslation(
+    word,
+    context,
+    signal
+) {
+
+    try {
+
+        let primaryUrl =
+            `${CONFIG.translationAPIPrimary}?q=${encodeURIComponent(word)}&langpair=en|hi`;
+
+        if (
+            context &&
+            context.trim().length > 0
+        ) {
+
+            primaryUrl +=
+                `&de=example@gmail.com&mt=1`;
+
+        }
+
+        const res =
+            await fetch(
+                primaryUrl,
+                { signal }
+            );
+
+        if (res.ok) {
+
+            const data =
+                await res.json();
+
+            let translated =
+                data?.responseData
+                    ?.translatedText;
+
+            translated =
+                sanitizeHindiTranslation(
+                    translated
+                );
+
+            if (
+                translated &&
+                translated.toLowerCase() !==
+                    word.toLowerCase()
+            ) {
+
+                return translated;
+
+            }
+
+        }
+
+    }
+    catch (e) {
+
+        if (
+            e.name ===
+            "AbortError"
+        ) {
+
+            return null;
+
+        }
+
+        console.warn(
+            "Primary Hindi API failed, attempting secondary..."
+        );
+
+    }
+
+    try {
+
+        const secondaryUrl =
+            `${CONFIG.translationAPISecondary}${encodeURIComponent(word)}`;
+
+        const res =
+            await fetch(
+                secondaryUrl,
+                { signal }
+            );
+
+        if (res.ok) {
+
+            const data =
+                await res.json();
+
+            let translated =
+                sanitizeHindiTranslation(
+                    data?.translation
+                );
+
+            if (translated) {
+
+                return translated;
+
+            }
+
+        }
+
+    }
+    catch (e) {
+
+        /* Ignore secondary errors */
+
+    }
+
+    return null;
+
+}
+
+
+/* =========================================================
+   WIKIMEDIA IMAGE
+========================================================= */
+
+async function fetchWikimediaImage(
+    word,
+    signal
+) {
+
+    try {
+
+        const url =
+            `${CONFIG.wikimediaAPI}?action=query&generator=search&gsrsearch=${encodeURIComponent(word)}&gsrlimit=1&prop=pageimages&piprop=thumbnail&pithumbsize=500&format=json&origin=*`;
+
+        const res =
+            await fetch(
+                url,
+                { signal }
+            );
+
+        if (res.ok) {
+
+            const data =
+                await res.json();
+
+            const pages =
+                data?.query?.pages;
+
+            if (pages) {
+
+                const pageId =
+                    Object.keys(
+                        pages
+                    )[0];
+
+                const thumb =
+                    pages[pageId]
+                        ?.thumbnail
+                        ?.source;
+
+                if (thumb)
+                    return thumb;
+
+            }
+
+        }
+
+    }
+    catch (e) {
+
+        if (
+            e.name ===
+            "AbortError"
+        ) {
+
+            return null;
+
+        }
+
+        console.warn(
+            "Wikimedia image fetch failed"
+        );
+
+    }
+
+    return null;
+
+}
+
+
+/* =========================================================
+   AUDIO PLAYBACK ENGINE
+========================================================= */
+
+function playDictionaryAudio(
+    audioUrl,
+    word,
+    langCode,
+    button
+) {
+
+    stopAllAudioPlayback();
+
+    if (button) {
+
+        currentPlayingButton =
+            button;
+
+        button.classList.add(
+            "playing"
+        );
+
+        button.textContent =
+            "🔊 Playing...";
+
+    }
+
+    if (
+        audioUrl &&
+        audioUrl.trim() !== "" &&
+        audioUrl !== "null"
+    ) {
+
+        let fullAudioUrl =
+            audioUrl;
+
+        if (
+            audioUrl.startsWith("//")
+        ) {
+
+            fullAudioUrl =
+                "https:" +
+                audioUrl;
+
+        }
+
+        const audio =
+            new Audio(
+                fullAudioUrl
+            );
+
+        currentAudioInstance =
+            audio;
+
+        audio.play()
+            .then(
+                () => {
+
+                    audio.onended =
+                        () => {
+
+                            resetAudioButton(
+                                button
+                            );
+
+                        };
+
+                }
+            )
+            .catch(
+                () => {
+
+                    fallbackSpeechSynthesis(
+                        word,
+                        langCode,
+                        button
+                    );
+
+                }
+            );
+
+        return;
+
+    }
+
+    fallbackSpeechSynthesis(
+        word,
+        langCode,
+        button
+    );
+
+}
+
+
+/* =========================================================
+   FALLBACK SPEECH
+========================================================= */
+
+function fallbackSpeechSynthesis(
+    word,
+    langCode,
+    button
+) {
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
+
+        if (button) {
+
+            button.classList.remove(
+                "playing"
+            );
+
+            button.classList.add(
+                "error"
+            );
+
+            button.textContent =
+                "Unavailable";
+
+        }
+
+        return;
+
+    }
+
+    const utterance =
+        new SpeechSynthesisUtterance(
+            word
+        );
+
+    utterance.lang =
+        langCode ||
+        "en-US";
+
+    utterance.rate =
+        0.85;
+
+    utterance.onend =
+        () => {
+
+            resetAudioButton(
+                button
+            );
+
+        };
+
+    utterance.onerror =
+        () => {
+
+            resetAudioButton(
+                button
+            );
+
+        };
+
+    window.speechSynthesis.speak(
+        utterance
+    );
+
+}
+
+
+/* =========================================================
+   STOP AUDIO
+========================================================= */
+
+function stopAllAudioPlayback() {
+
+    if (currentAudioInstance) {
+
+        currentAudioInstance.pause();
+
+        currentAudioInstance.currentTime =
+            0;
+
+        currentAudioInstance =
+            null;
+
+    }
+
+    if (
+        "speechSynthesis" in window
+    ) {
+
+        window.speechSynthesis.cancel();
+
+    }
+
+    if (currentPlayingButton) {
+
+        resetAudioButton(
+            currentPlayingButton
+        );
+
+    }
+
+}
+
+
+function resetAudioButton(
+    button
+) {
+
+    if (!button) return;
+
+    button.classList.remove(
+        "playing",
+        "error"
+    );
+
+    button.textContent =
+        "🔊 Listen";
+
+    currentPlayingButton =
+        null;
+
+}
+
+
+/* =========================================================
+   DICTIONARY SEARCH HISTORY
+========================================================= */
+
+function getSearchedWords() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(
+                CONFIG.WORD_STORAGE_KEY
+            )
+        ) || [];
+
+    }
+    catch {
+
+        return [];
+
+    }
+
+}
+
+
+function saveSearchedWord(
+    word
+) {
+
+    let words =
+        getSearchedWords()
+            .filter(
+                item =>
+                    item !== word
+            );
+
+    words.unshift(
+        word
+    );
+
+    localStorage.setItem(
+        CONFIG.WORD_STORAGE_KEY,
+        JSON.stringify(
+            words.slice(
+                0,
+                50
+            )
+        )
+    );
+
+}
+
+
+function clearSearchedHistory() {
+
+    localStorage.removeItem(
+        CONFIG.WORD_STORAGE_KEY
+    );
+
+    const historySec =
+        document.querySelector(
+            ".history-section"
+        );
+
+    if (historySec) {
+
+        historySec.remove();
+
+    }
+
+}
+
+
+function renderSearchHistory() {
+
+    const words =
+        getSearchedWords();
+
+    if (!words.length)
+        return "";
+
+    const buttons =
+        words
+            .slice(0, 10)
+            .map(
+                word => `
+
+                    <button
+                        class="history-word"
+                        onclick="searchDictionary('${escapeHTML(word)}')">
+
+                        ${escapeHTML(word)}
+
+                    </button>
+
+                `
+            )
+            .join("");
+
+    return `
+
+        <div class="history-section">
+
+            <div class="history-header">
+
+                <div class="section-label">
+                    Recent Searches
+                </div>
+
+                <button
+                    class="clear-history-btn"
+                    onclick="clearSearchedHistory()">
+
+                    Clear History
+
+                </button>
+
+            </div>
+
+            <div class="history-list">
+
+                ${buttons}
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   WORD CLEANER
+========================================================= */
+
+function cleanSearchWord(
+    word
+) {
+
+    return String(
+        word || ""
+    )
+        .replace(
+            /^[^a-zA-Z'-]+/,
+            ""
+        )
+        .replace(
+            /[^a-zA-Z'-]+$/,
+            ""
+        )
+        .trim();
+
+}
+
+
+/* =========================================================
+   READER STATES
+========================================================= */
+
+function showLoading(
+    message
+) {
+
+    readerContainer.innerHTML = `
+
+        <div class="loading-block">
+
+            <div class="spinner"></div>
+
+            ${message}
+
+        </div>
+
+    `;
+
+}
+
+
+function showError(
+    message
+) {
+
+    readerContainer.innerHTML = `
+
+        <div class="loading-block error-message">
+
+            ${escapeHTML(message)}
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================================================
+   EVENT LISTENERS
+========================================================= */
+
+randomBtn.addEventListener(
+    "click",
+    fetchRandomArticle
+);
+
+
+loadTopicBtn.addEventListener(
+    "click",
+    () => {
+
+        fetchTopicArticle(
+            wikiInput.value
+        );
+
+    }
+);
+
+
+wikiInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+            "Enter"
+        ) {
+
+            fetchTopicArticle(
+                wikiInput.value
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   DICTIONARY EVENTS
+========================================================= */
+
+dictionaryButton.addEventListener(
+    "click",
+    () => {
+
+        openDictionary();
+
+    }
+);
+
+
+dictionaryClose.addEventListener(
+    "click",
+    closeDictionary
+);
+
+
+dictionarySearchButton.addEventListener(
+    "click",
+    () => {
+
+        searchDictionary(
+            dictionaryInput.value
+        );
+
+    }
+);
+
+
+dictionaryInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+            "Enter"
+        ) {
+
+            searchDictionary(
+                dictionaryInput.value
+            );
+
+        }
+
+    }
+);
+
+
+dictionaryOverlay.addEventListener(
+    "click",
+    event => {
+
+        if (
+            event.target ===
+            dictionaryOverlay
+        ) {
+
+            closeDictionary();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ESC CLOSE
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key === "Escape" &&
+            dictionaryOverlay.classList.contains(
+                "open"
+            )
+        ) {
+
+            closeDictionary();
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
